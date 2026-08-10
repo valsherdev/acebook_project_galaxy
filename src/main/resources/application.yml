@@ -1,7 +1,7 @@
 okta:
   oauth2:
-    issuer: your url
-    client-id: your id
-    client-secret: your secret
+    issuer: https://dev-8s80r8or4szwh25d.us.auth0.com/
+    client-id: YNjQBRFITVwzZ7c3UypyMPDZhWo64MEs
+    client-secret: 07sE39nSRyuPtdaNZPGoZYFAFK4bklmAWa6UTs9FnEQjDAiHL6-6b8To4tAZrzd1
 
     
