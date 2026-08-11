@@ -20,7 +20,7 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public Post() {}
 
