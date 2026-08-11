@@ -14,26 +14,27 @@
 
         <h1>Posts</h1>
 
-        <div sec:authorize="isAuthenticated()" id="greeting">
-            Signed in as <span sec:authentication="principal.attributes['email']"></span>
-        </div>
+<!--        <div sec:authorize="isAuthenticated()" id="greeting">-->
+<!--            Signed in as <span sec:authentication="principal.attributes['email']"></span>-->
+<!--        </div>-->
 
         <form action="#" th:action="@{/posts}" th:object="${post}" method="post">
             <p>Content: <input type="text" th:field="*{content}" /></p>
             <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
         </form>
 
-        <ul>
 
-        <li th:each="post: ${posts}">
-            <p>
-                <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
-                <span th:text="${post.content}"></span>
-                <span th:text="${post.createdAt}"></span>
-            </p>
+            <ul>
+                <li class="post-box" th:each="post: ${posts}">
+                    <p>
+                        <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+                        <span th:text="${post.content}"></span>
+                        <span th:text="${post.createdAt}"></span>
+                    </p>
 
-        </li>
-        </ul>
+                </li>
+            </ul>
+
     </div>
     </body>
 </html>

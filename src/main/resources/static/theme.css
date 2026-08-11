@@ -15,7 +15,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1.5rem;
-    background-color: #f8f9fa;
+    background-color: darkturquoise;
     position: fixed;
     top: 0;
     left: 0;
@@ -45,3 +45,18 @@ body {
 
 .navbar-container [data-sticky="top"].position-absolute.position-fixed {
     background: #212529; }
+
+.sign-in-greeting {
+    text-align: right;
+    padding-right: 40px;
+    white-space: nowrap;
+}
+
+.post-box {
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border: 2px solid grey;
+    border-radius: 8px;
+}
