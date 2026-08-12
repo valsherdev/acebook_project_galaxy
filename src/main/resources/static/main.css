@@ -8,3 +8,70 @@
     text-align: left;
     margin-bottom: 0.5rem;;
 }
+
+/**/
+
+.post-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #eef2ff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);*/
+}
+
+.profile-pic-placeholder {
+    width: 40px;
+    height: 40px;
+    background: #cbd5e1;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 28px;
+}
+
+.post-form input[type="text"] {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    background: #f8fafc;
+    outline: none;
+}
+
+.post-form input[type="text"]:focus {
+    background: #fff;
+    border-color: #4f46e5;
+}
+
+.post-form-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.post-form input[type="submit"],
+.post-form input[type="reset"] {
+    background: #2c194f;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.post-form input[type="reset"] {
+    background: #64748b;
+}
+
+.post-form input[type="submit"]:hover {
+    background: #4f46e5;
+}
+
+.post-form input[type="reset"]:hover {
+    background: #475569;
+}

@@ -1,62 +1,127 @@
-/*.navbar [data-sticky="top"].position-absolute.position-fixed {*/
-/*    background: aqua;*/
-
-/*}*/
+/*!*.navbar [data-sticky="top"].position-absolute.position-fixed {*!*/
+/*!*    background: aqua;*!*/
 
 body {
-    /* Pushes all page content down so the fixed navbar doesn't cover it */
-    padding-top: 80px;
+    padding-top: 90px;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
+}
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+}
+
+.navbar-container {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1.5rem;
-    background-color: darkturquoise;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+    padding: 0.8rem 2rem;
+    /*background-color: #2c194f;*/
+    /*border-bottom: 1px solid #e2e8f0;*/
+    background: linear-gradient(135deg, #2c194f, #4f46e5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    justify-self: start;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: #8680d1;
 }
 
 .navbar .nav-links {
+    justify-self: center;
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 1.5rem;
+    gap: 0.5rem;
 }
 
 .navbar .nav-links a {
     text-decoration: none;
-    color: #333;
+    color: #ffffff;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
 }
 
 .navbar .nav-links a:hover {
-    color: #007bff;
+    background-color: #f1f5f9;
+    color: #1e293b;
 }
 
-.navbar-container [data-sticky="top"].position-absolute {
-    transition: background-color .35s ease; }
-
-.navbar-container [data-sticky="top"].position-absolute.position-fixed {
-    background: #212529; }
-
 .sign-in-greeting {
+    justify-self: end;
+    display: flex;
+    align-items: center;
     text-align: right;
-    padding-right: 40px;
     white-space: nowrap;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: #ffffffad;
+    background-color: #ffffff14;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+}
+
+.sign-in-greeting span {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* logout link */
+.sign-in-greeting a {
+    display: inline-block !important;
+    text-decoration: none;
+    background: #32216a;
+    color: #ffffff; /* Clean professional red tone for logout */
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.sign-in-greeting a:hover {
+    background-color: #ffffff;
+    color: black
+;
+}
+
+.content-container {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
 }
 
 .post-box {
     display: flex;
     flex-direction: column;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    border: 2px solid grey;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background-color: #ffffff;
+    border: 1px solid #312aa3;
     border-radius: 8px;
+}
+
+ul {
+    padding-inline-start: unset;
 }

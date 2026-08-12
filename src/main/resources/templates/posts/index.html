@@ -12,17 +12,16 @@
 
     <div layout:fragment="content">
 
-        <h1>Posts</h1>
+        <h1>Posts Feed</h1>
 
-<!--        <div sec:authorize="isAuthenticated()" id="greeting">-->
-<!--            Signed in as <span sec:authentication="principal.attributes['email']"></span>-->
-<!--        </div>-->
-
-        <form action="#" th:action="@{/posts}" th:object="${post}" method="post">
-            <p>Content: <input type="text" th:field="*{content}" /></p>
-            <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+        <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post">
+            <div class="profile-pic-placeholder">👤</div>
+                <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
+            <div class="post-form-actions">
+                <input type="submit" value="Submit" />
+                <input type="reset" value="Reset" />
+            </div>
         </form>
-
 
             <ul>
                 <li class="post-box" th:each="post: ${posts}">
@@ -31,10 +30,8 @@
                         <span th:text="${post.content}"></span>
                         <span th:text="${post.createdAt}"></span>
                     </p>
-
                 </li>
             </ul>
-
     </div>
     </body>
 </html>
