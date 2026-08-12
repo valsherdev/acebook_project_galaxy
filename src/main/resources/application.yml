@@ -1,7 +1,0 @@
-okta:
-  oauth2:
-    issuer: https://dev-q6bvfittqaomedtp.us.auth0.com/
-    client-id: VhrUa65bCg4AgkCjXmpcOgPfGuCJVVg5
-    client-secret: BD9Ca_6ia-pA20ijtuRt7yJ3GFULxnDh76w09imJwJ-E9rduLDw7ZlO-8qXZ6jEW
-
-    
