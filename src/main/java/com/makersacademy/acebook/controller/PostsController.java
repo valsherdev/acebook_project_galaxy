@@ -54,6 +54,9 @@ public class PostsController {
 
     @PostMapping("/posts")
     public RedirectView create(@ModelAttribute Post post) {
+        if (post.getContent() == null || post.getContent().isBlank()) {
+            return new RedirectView("/posts");
+        }
         User currentUser = getCurrentUser();
         post.setUser(currentUser);
         repository.save(post);
