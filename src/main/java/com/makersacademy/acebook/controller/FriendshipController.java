@@ -28,13 +28,13 @@ public class FriendshipController {
     public String addFriend(@RequestParam Long currentUserId, @RequestParam Long friendId) {
 
         User currentUser = userRepository.findById(currentUserId).orElseThrow();
-        User becomeFriend = userRepository.findById(friendId).orElseThrow();
+        User friendUser = userRepository.findById(friendId).orElseThrow();
 
-        if (!currentUser.getId().equals(becomeFriend.getId())) {
-            boolean alreadyFriends = friendshipRepository.existsByUserAndFriend(currentUser, becomeFriend);
+        if (!currentUser.getId().equals(friendUser.getId())) {
+            boolean alreadyFriends = friendshipRepository.existsByUserAndFriend(currentUser, friendUser);
 
             if (!alreadyFriends) {
-                Friendship friendship = new Friendship(currentUser, becomeFriend, "ACCEPTED");
+                Friendship friendship = new Friendship(currentUser, friendUser, "ACCEPTED");
                 friendshipRepository.save(friendship);
             }
         }
