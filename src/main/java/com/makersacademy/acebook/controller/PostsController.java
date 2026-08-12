@@ -4,6 +4,7 @@ import com.makersacademy.acebook.model.Comment;
 import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.CommentRepository;
+import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -28,8 +30,17 @@ public class PostsController {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    FriendshipRepository friendshipRepository;
+
     @GetMapping("/posts")
     public String index(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("currentUserId", currentUser.getId());
+
+        List<Long> friendIds = friendshipRepository.findFriendIdsByUserId(currentUser.getId());
+        model.addAttribute("currentUserFriendIds", friendIds);
+
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());
@@ -68,4 +79,5 @@ public class PostsController {
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
     }
+
 }
