@@ -1,6 +1,8 @@
 <!DOCTYPE html>
     <html xmlns:th="http://www.thymeleaf.org"
-          xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" >
+          xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+          layout:decorate="~{layout}">
     <head lang="en">
         <meta charset="UTF-8"/>
         <title>Acebook</title>
@@ -8,20 +10,22 @@
     </head>
     <body>
 
-    <h1>Posts</h1>
+    <div layout:fragment="content">
 
-    <div sec:authorize="isAuthenticated()" id="greeting">
-        Signed in as <span sec:authentication="principal.attributes['email']"></span>
-    </div>
+        <h1>Posts Feed</h1>
 
-    <form action="#" th:action="@{/posts}" th:object="${post}" method="post">
-        <p>Content: <input type="text" th:field="*{content}" /></p>
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
+        <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post">
+            <div class="profile-pic-placeholder">👤</div>
+                <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
+            <div class="post-form-actions">
+                <input type="submit" value="Submit" />
+                <input type="reset" value="Reset" />
+            </div>
+        </form>
 
     <ul>
 
-    <li th:each="post: ${posts}">
+    <li class="post-box" th:each="post: ${posts}">
         <p>
             Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
             <span th:text="${post.content}"></span>
