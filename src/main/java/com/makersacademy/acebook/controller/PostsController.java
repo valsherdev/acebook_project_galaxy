@@ -1,10 +1,12 @@
 package com.makersacademy.acebook.controller;
 
 import com.makersacademy.acebook.model.Comment;
+import com.makersacademy.acebook.model.Like;
 import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.CommentRepository;
 import com.makersacademy.acebook.repository.FriendshipRepository;
+import com.makersacademy.acebook.repository.LikeRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PostsController {
@@ -32,6 +34,9 @@ public class PostsController {
 
     @Autowired
     FriendshipRepository friendshipRepository;
+
+    @Autowired
+    LikeRepository likeRepository;
 
     @GetMapping("/posts")
     public String index(Model model) {
@@ -70,6 +75,19 @@ public class PostsController {
         return "posts/show";
     }
 
+    @PostMapping("/posts/{postId}/likes")
+    public RedirectView toggleLike(@PathVariable Long postId) {
+        Post post = repository.findById(postId).orElseThrow();
+        User currentUser = getCurrentUser();
+        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, currentUser.getId());
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get());
+        } else {
+            likeRepository.save(new Like(post, currentUser));
+        }
+        return new RedirectView("/posts");
+    }
+
 
     private User getCurrentUser() {
         DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder
@@ -79,5 +97,4 @@ public class PostsController {
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
     }
-
 }

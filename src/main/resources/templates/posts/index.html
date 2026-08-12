@@ -41,6 +41,11 @@
             <span th:if="${currentUserFriendIds.contains(post.user.id)}" class="friends-label">Friends</span>
         </div>
 
+        <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
+            <button type="submit">❤️</button>
+            <span th:text="${post.likes.size()} + ' likes'"></span>
+        </form>
+
         <div>
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
 
@@ -60,6 +65,7 @@
     </li>
 
     </ul>
+    </div>
 
     </body>
 </html>
