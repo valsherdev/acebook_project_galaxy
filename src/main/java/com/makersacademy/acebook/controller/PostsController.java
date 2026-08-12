@@ -1,9 +1,11 @@
 package com.makersacademy.acebook.controller;
 
 import com.makersacademy.acebook.model.Comment;
+import com.makersacademy.acebook.model.Like;
 import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.CommentRepository;
+import com.makersacademy.acebook.repository.LikeRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PostsController {
@@ -27,6 +30,9 @@ public class PostsController {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    LikeRepository likeRepository;
 
     @GetMapping("/posts")
     public String index(Model model) {
@@ -60,6 +66,19 @@ public class PostsController {
         Post post = repository.findById(id).orElseThrow();
         model.addAttribute("post", post);
         return "posts/show";
+    }
+
+    @PostMapping("/posts/{postId}/likes")
+    public RedirectView toggleLike(@PathVariable Long postId) {
+        Post post = repository.findById(postId).orElseThrow();
+        User currentUser = getCurrentUser();
+        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, currentUser.getId());
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get());
+        } else {
+            likeRepository.save(new Like(post, currentUser));
+        }
+        return new RedirectView("/posts");
     }
 
 
