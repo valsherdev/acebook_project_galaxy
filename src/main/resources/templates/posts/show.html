@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Post</title>
+    <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+
+<a th:href="@{/posts}">&larr; Back to feed</a>
+<p>
+    Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+    <span th:text="${post.content}"></span>
+    <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+</p>
+<h4>Comments</h4>
+<div th:each="comment : ${post.comments}">
+    <span th:text="${comment.user.username} + ': ' + ${comment.content}"></span>
+    <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
+</div>
+
+<form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
+    <input type="text" name="content" placeholder="Write a comment..." />
+    <button type="submit">Comment</button>
+</form>
+
+</body>
+</html>

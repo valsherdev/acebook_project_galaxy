@@ -1,7 +1,9 @@
 package com.makersacademy.acebook.controller;
 
+import com.makersacademy.acebook.model.Comment;
 import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
+import com.makersacademy.acebook.repository.CommentRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class PostsController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CommentRepository commentRepository;
+
     @GetMapping("/posts")
     public String index(Model model) {
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
@@ -37,6 +42,21 @@ public class PostsController {
         post.setUser(currentUser);
         repository.save(post);
         return new RedirectView("/posts");
+    }
+
+    @PostMapping("/posts/{postId}/comments")
+    public RedirectView createComment(@PathVariable Long postId, @RequestParam String content) {
+        Post post = repository.findById(postId).orElseThrow();
+        User currentUser = getCurrentUser();
+        commentRepository.save(new Comment(content, post, currentUser));
+        return new RedirectView("/posts");
+    }
+
+    @GetMapping("/posts/{id}")
+    public String show(@PathVariable Long id, Model model) {
+        Post post = repository.findById(id).orElseThrow();
+        model.addAttribute("post", post);
+        return "posts/show";
     }
 
 

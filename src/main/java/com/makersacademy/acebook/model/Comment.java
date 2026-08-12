@@ -1,21 +1,25 @@
 package com.makersacademy.acebook.model;
 
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
-@Table(name = "POSTS")
-public class Post {
+@Table(name = "COMMENTS")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -23,16 +27,14 @@ public class Post {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    public Comment() {}
 
-    public Post() {}
-
-    public Post(String content, User user) {
-
+    public Comment(String content, Post post, User user) {
         this.content = content;
+        this.post = post;
         this.user = user;
         this.createdAt = LocalDateTime.now();
     }
+
 
 }
