@@ -91,7 +91,6 @@ public class PostsController {
         return new RedirectView("/posts");
     }
 
-
     private User getCurrentUser() {
         DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder
                 .getContext()
