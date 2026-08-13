@@ -47,6 +47,9 @@ public class PostsController {
         List<Long> friendIds = friendshipRepository.findFriendIdsByUserId(currentUser.getId());
         model.addAttribute("currentUserFriendIds", friendIds);
 
+        Profile profile = profileRepository.findByUser(currentUser).orElse(null);
+        model.addAttribute("profile", profile);
+
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());

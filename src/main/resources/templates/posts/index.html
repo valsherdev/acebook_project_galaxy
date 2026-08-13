@@ -15,7 +15,12 @@
         <h1>Posts Feed</h1>
 
         <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post">
-            <div class="profile-pic-placeholder">👤</div>
+
+            <img th:if="${profile.profilePicture != null}" class="profile-pic-placeholder"
+                 th:src="@{'data:image/jpeg;base64,' + ${profile.convertImageByteToString()}}"
+                 alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10"
+                 style="max-width: 40px; height: auto;" />
+
                 <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
             <div class="post-form-actions">
                 <input type="submit" value="Submit" />
@@ -25,32 +30,30 @@
 
     <ul>
 
-    <li class="post-box" th:each="post: ${posts}">
+    <li class="post-box" th:each="post: ${posts}" th:with="profile=${post.user?.profile},
+        hasFirstName=${profile != null and !#strings.isEmpty(profile.firstName)},
+        hasLastName=${profile != null and !#strings.isEmpty(profile.lastName)}">
 
+        <img th:if="${profile.profilePicture != null}"
+             th:src="@{'data:image/jpeg;base64,' + ${profile.convertImageByteToString()}}"
+             alt="Profile Picture"
+             style="max-width: 40px; height: auto;" />
         <p>
             Posted by
-            <strong th:if="${post.user?.profile != null and !#strings.isEmpty(post.user.profile.firstName)}"
+            <strong th:if="${hasFirstName} and ${hasLastName}"
                 th:text="${post.user.profile.firstName} + ' ' + ${post.user.profile.lastName}">First and Last name
             </strong>
 
-            <strong th:if="${post.user != null and (post.user?.profile == null or #strings.isEmpty(post.user.profile.firstName)
-             or #strings.isEmpty(post.user.profile.lastName))}"
+            <strong th:unless="${hasFirstName} and ${hasLastName}"
                     th:text="${post.user.username}">Email
             </strong>
 
             <strong th:if="${post.user == null}">Unknown</strong>
         </p>
 
-
             <p th:text="${post.content}"></p>
             <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
 
-
-<!--            <p>-->
-<!--            Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:-->
-<!--            <span th:text="${post.content}"></span>-->
-<!--            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>-->
-<!--        </p>-->
 
         <div th:if="${post.user != null and post.user.id != currentUserId}">
             <form th:action="@{/friends/add}" method="post" th:if="${!currentUserFriendIds.contains(post.user.id)}">
@@ -69,8 +72,13 @@
         <div>
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
 
-            <div th:each="comment, commentStat : ${post.comments}" th:if="${commentStat.index < 3}">
-                <span th:text="${comment.user.username} + ': ' + ${comment.content}"></span>
+            <div th:each="comment, commentStat : ${post.comments}" th:if="${commentStat.index < 3}"
+                 th:with="cProfile=${post.user?.profile}, hasBothNames=${profile != null and !#strings.isEmpty(profile.firstName) and
+                 !#strings.isEmpty(profile.lastName)}">
+                <span th:text="${hasBothNames ? cProfile.firstName + ' ' + cProfile.lastName + ': ' + comment.content
+                      : comment.user.username + ': ' + comment.content}"
+                ></span>
+
                 <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
             </div>
             <p th:if="${post.comments.size() > 3}">
