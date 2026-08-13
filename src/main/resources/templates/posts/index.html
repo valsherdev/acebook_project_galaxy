@@ -36,7 +36,10 @@
             </form>
         </details>
         <p>
-            Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+            <a th:if="${post.user != null}"
+               th:href="@{'/profile/' + ${post.user.id}}"
+               th:text="${post.user.username}">
+            </a>:
             <span th:text="${post.content}"></span>
             <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
         </p>

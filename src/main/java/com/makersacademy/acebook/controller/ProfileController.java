@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
@@ -69,6 +70,27 @@ public class ProfileController {
 
         return "redirect:/profile";
 
+    }
+
+    @GetMapping("/profile/{userId}")
+    public ModelAndView getUserProfile(@PathVariable Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+
+        Profile profile = profileRepository.findByUser(user)
+                .orElseGet(() -> {
+                    Profile newProfile = new Profile();
+                    newProfile.setUser(user);
+                    return newProfile;
+                });
+
+        List<Post> posts =
+                postRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+
+        ModelAndView modelAndView = new ModelAndView("profile");
+        modelAndView.addObject("profile", profile);
+        modelAndView.addObject("posts", posts);
+
+        return modelAndView;
     }
 
     private Profile getOrCreateProfileOfCurrentUser() {
