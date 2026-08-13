@@ -56,7 +56,7 @@ public class FriendshipController {
         return "friends/index";
     }
 
-    // CHANGE: checks findBetweenUsers (either direction) instead of existsByUserAndFriend (one direction only)
+    // VS: CHANGE: checks findBetweenUsers (either direction) instead of existsByUserAndFriend (one direction only)
     @PostMapping("/friends/add")
     public RedirectView addFriend(@RequestParam Long currentUserId, @RequestParam Long friendId) {
         User currentUser = userRepository.findById(currentUserId).orElseThrow();
@@ -69,7 +69,7 @@ public class FriendshipController {
                 friendshipRepository.save(friendship);
                 }
             }
-        return new RedirectView("/posts");
+        return new RedirectView("/friends");
     }
 
     @PostMapping("/friends/{friendshipId}/accept")
