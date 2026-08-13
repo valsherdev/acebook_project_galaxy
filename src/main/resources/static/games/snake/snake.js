@@ -278,7 +278,7 @@ function draw() {
 
         ctx.stroke();
     }
-    
+
     ctx.fillStyle = "#4f46e5";
 
     ctx.beginPath();
