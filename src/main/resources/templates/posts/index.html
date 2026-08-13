@@ -36,6 +36,8 @@
             </form>
         </details>
         <p>
+            Posted by 
+            <span th:if="${post.user == null}">Guest</span>
             <a th:if="${post.user != null}"
                th:href="@{'/profile/' + ${post.user.id}}"
                th:text="${post.user.username}">
