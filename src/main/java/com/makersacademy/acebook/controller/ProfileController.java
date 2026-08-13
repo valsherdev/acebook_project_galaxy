@@ -80,7 +80,7 @@ public class ProfileController {
                 .orElseGet(() -> {
                     Profile newProfile = new Profile();
                     newProfile.setUser(user);
-                    return newProfile;
+                    return profileRepository.save(newProfile);
                 });
 
         List<Post> posts =
@@ -98,7 +98,7 @@ public class ProfileController {
         return profileRepository.findByUser(getCurrentUser()).orElseGet(() -> {
             Profile newProfile = new Profile();
             newProfile.setUser(getCurrentUser());
-            return newProfile;
+            return profileRepository.save(newProfile);
         });
     }
 
