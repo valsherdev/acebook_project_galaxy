@@ -10,8 +10,10 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,21 +56,35 @@ public class FriendshipController {
         return "friends/index";
     }
 
+    // CHANGE: checks findBetweenUsers (either direction) instead of existsByUserAndFriend (one direction only)
     @PostMapping("/friends/add")
-    public String addFriend(@RequestParam Long currentUserId, @RequestParam Long friendId) {
-
+    public RedirectView addFriend(@RequestParam Long currentUserId, @RequestParam Long friendId) {
         User currentUser = userRepository.findById(currentUserId).orElseThrow();
         User friendUser = userRepository.findById(friendId).orElseThrow();
 
         if (!currentUser.getId().equals(friendUser.getId())) {
-            boolean alreadyFriends = friendshipRepository.existsByUserAndFriend(currentUser, friendUser);
-
-            if (!alreadyFriends) {
-                Friendship friendship = new Friendship(currentUser, friendUser, "ACCEPTED");
+            boolean alreadyExists = friendshipRepository.findBetweenUsers(currentUser.getId(), friendUser.getId()).isPresent();
+            if (!alreadyExists) {
+                Friendship friendship = new Friendship(currentUser, friendUser, "PENDING");
                 friendshipRepository.save(friendship);
+                }
             }
-        }
-        return "redirect:/posts";
+        return new RedirectView("/posts");
+    }
+
+    @PostMapping("/friends/{friendshipId}/accept")
+    public RedirectView accept(@PathVariable Long friendshipId) {
+        Friendship friendship = friendshipRepository.findById(friendshipId).orElseThrow();
+        friendship.setStatus("ACCEPTED");
+        friendshipRepository.save(friendship);
+        return new RedirectView("/friends");
+    }
+
+    @PostMapping("/friends/{friendshipId}/decline")
+    public RedirectView decline(@PathVariable Long friendshipId) {
+        Friendship friendship = friendshipRepository.findById(friendshipId).orElseThrow();
+        friendshipRepository.delete(friendship);
+        return new RedirectView("/friends");
     }
 
     private User getCurrentUser() {
