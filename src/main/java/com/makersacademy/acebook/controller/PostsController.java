@@ -78,6 +78,16 @@ public class PostsController {
         return "posts/show";
     }
 
+    @PostMapping("/posts/{postId}/delete")
+    public RedirectView delete(@PathVariable Long postId) {
+        Post post = repository.findById(postId).orElseThrow();
+        User currentUser = getCurrentUser();
+        if (post.getUser().getId().equals(currentUser.getId())) {
+            repository.delete(post);
+        }
+        return new RedirectView("/posts");
+    }
+
     @PostMapping("/posts/{postId}/likes")
     public RedirectView toggleLike(@PathVariable Long postId) {
         Post post = repository.findById(postId).orElseThrow();
@@ -90,7 +100,6 @@ public class PostsController {
         }
         return new RedirectView("/posts");
     }
-
 
     private User getCurrentUser() {
         DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder

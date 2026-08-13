@@ -26,6 +26,15 @@
     <ul>
 
     <li class="post-box" th:each="post: ${posts}">
+        <details class="post-menu">
+            <summary class="dots-button">⋮</summary>
+
+            <form th:if="${post.user != null and post.user.id == currentUserId}"
+                  th:action="@{'/posts/' + ${post.id} + '/delete'}"
+                  method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </details>
         <p>
             Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
             <span th:text="${post.content}"></span>
@@ -63,7 +72,6 @@
             </form>
         </div>
     </li>
-
     </ul>
     </div>
     </body>
