@@ -12,28 +12,22 @@
 
 <body>
 <div layout:fragment="content">
-    <h2 th:if="${profile.firstName != null and !profile.firstName.isBlank()
-            and profile.lastName != null and !profile.lastName.isBlank()}"
-        th:text="${profile.firstName + ' ' + profile.lastName + '\'s Profile'}">
-        Profile
-    </h2>
 
-    <h2 th:if="${profile.firstName != null and !profile.firstName.isBlank()
-            and (profile.lastName == null or profile.lastName.isBlank())}"
-        th:text="${profile.firstName + '\'s Profile'}">
-        Profile
-    </h2>
+    <h2>
+    <span th:if="${profile.firstName != null and !profile.firstName.isBlank()}"
+          th:text="${profile.firstName}">
+    </span>
 
-    <h2 th:if="${profile.lastName != null and !profile.lastName.isBlank()
-            and (profile.firstName == null or profile.firstName.isBlank())}"
-        th:text="${profile.lastName + '\'s Profile'}">
-        Profile
-    </h2>
+        <span th:if="${profile.lastName != null and !profile.lastName.isBlank()}"
+              th:text="${(profile.firstName != null and !profile.firstName.isBlank()) ? ' ' + profile.lastName : profile.lastName}">
+    </span>
 
-    <h2 th:if="${(profile.firstName == null or profile.firstName.isBlank())
-            and (profile.lastName == null or profile.lastName.isBlank())}"
-        th:text="${profile.user.username + '\'s Profile'}">
-        Profile
+        <span th:if="${(profile.firstName == null or profile.firstName.isBlank())
+                  and (profile.lastName == null or profile.lastName.isBlank())}"
+              th:text="${profile.user.username}">
+    </span>
+
+        <span>'s Profile</span>
     </h2>
 
     <p><strong>First name:</strong> <span th:text="${profile.firstName}">First</span></p>
