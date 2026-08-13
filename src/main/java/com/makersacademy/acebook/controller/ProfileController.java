@@ -63,7 +63,6 @@ public class ProfileController {
         profile.setCurrentLocation(profileForm.getCurrentLocation());
         profile.setHometown(profileForm.getHometown());
         profile.setAboutMe(profileForm.getAboutMe());
-//        profile.setProfilePicture(profileForm.getProfilePicture());
         profileRepository.save(profile);
 
         return "redirect:/profile";

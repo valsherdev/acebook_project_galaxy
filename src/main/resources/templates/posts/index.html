@@ -26,11 +26,31 @@
     <ul>
 
     <li class="post-box" th:each="post: ${posts}">
+
         <p>
-            Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
-            <span th:text="${post.content}"></span>
-            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+            Posted by
+            <strong th:if="${post.user?.profile != null and !#strings.isEmpty(post.user.profile.firstName)}"
+                th:text="${post.user.profile.firstName} + ' ' + ${post.user.profile.lastName}">First and Last name
+            </strong>
+
+            <strong th:if="${post.user != null and (post.user?.profile == null or #strings.isEmpty(post.user.profile.firstName)
+             or #strings.isEmpty(post.user.profile.lastName))}"
+                    th:text="${post.user.username}">Email
+            </strong>
+
+            <strong th:if="${post.user == null}">Unknown</strong>
         </p>
+
+
+            <p th:text="${post.content}"></p>
+            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+
+
+<!--            <p>-->
+<!--            Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:-->
+<!--            <span th:text="${post.content}"></span>-->
+<!--            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>-->
+<!--        </p>-->
 
         <div th:if="${post.user != null and post.user.id != currentUserId}">
             <form th:action="@{/friends/add}" method="post" th:if="${!currentUserFriendIds.contains(post.user.id)}">
