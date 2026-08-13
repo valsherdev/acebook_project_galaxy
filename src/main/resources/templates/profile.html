@@ -7,6 +7,7 @@
     <meta charset="UTF-8"/>
     <title>My Profile</title>
     <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/main.css" />
 </head>
 
 <body>
@@ -20,6 +21,66 @@
     <p><strong>About me:</strong> <span th:text="${profile.aboutMe}">About</span></p>
 
     <a th:href="@{/profile/edit}">Edit Profile</a>
+
+    <h2>Activity</h2>
+
+    <div th:if="${#lists.isEmpty(posts)}">
+        <p>No posts yet.</p>
+    </div>
+
+    <ul>
+        <li class="post-box" th:each="post : ${posts}">
+
+            <details class="post-menu">
+                <summary class="dots-button">⋮</summary>
+
+                <form th:action="@{'/posts/' + ${post.id} + '/delete'}"
+                      method="post">
+                    <button type="submit">Delete</button>
+                </form>
+            </details>
+
+            <p>
+                Posted by
+                <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+                <span th:text="${post.content}"></span>
+                <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+            </p>
+
+            <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
+                <button type="submit">❤️</button>
+                <span th:text="${post.likes.size()} + ' likes'"></span>
+            </form>
+
+            <div>
+                <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
+
+                <div th:each="comment, commentStat : ${post.comments}"
+                     th:if="${commentStat.index < 3}">
+                    <span th:text="${comment.user.username} + ': ' + ${comment.content}"></span>
+                    <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
+                </div>
+
+                <p th:if="${post.comments.size() > 3}">
+                    <a th:href="@{'/posts/' + ${post.id}}">
+                        View all
+                        <span th:text="${post.comments.size()}"></span>
+                        comments
+                    </a>
+                </p>
+
+                <form th:action="@{'/posts/' + ${post.id} + '/comments'}"
+                      method="post">
+                    <input type="text"
+                           name="content"
+                           placeholder="Leave a comment..." />
+                    <button type="submit">Comment</button>
+                </form>
+            </div>
+
+        </li>
+    </ul>
+
 </div>
 </body>
 </html>

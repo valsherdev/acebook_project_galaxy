@@ -2,6 +2,8 @@ package com.makersacademy.acebook.controller;
 
 import com.makersacademy.acebook.model.Profile;
 import com.makersacademy.acebook.model.User;
+import com.makersacademy.acebook.model.Post;
+import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.ProfileRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import java.util.List;
 
 @Controller
 public class ProfileController {
@@ -22,11 +25,19 @@ public class ProfileController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PostRepository postRepository;
+
     @GetMapping("/profile")
     public ModelAndView getProfile() {
         Profile profile = getOrCreateProfileOfCurrentUser();
+
+        List<Post> posts =
+                postRepository.findAllByUserIdOrderByCreatedAtDesc(profile.getUser().getId());
+
         ModelAndView modelAndView = new ModelAndView("profile");
         modelAndView.addObject("profile", profile);
+        modelAndView.addObject("posts", posts);
         return modelAndView;
     }
 
