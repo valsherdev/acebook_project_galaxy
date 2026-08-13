@@ -12,6 +12,11 @@
 <body>
 <div layout:fragment="content">
     <h2>My Profile</h2>
+    <p><strong>Profile Picture:</strong></p>
+    <img th:if="${profile.profilePicture != null}"
+         th:src="@{'data:image/jpeg;base64,' + ${profile.convertImageByteToString()}}"
+         alt="Space Image"
+         style="max-width: 200px; height: auto;" />
 
     <p><strong>First name:</strong> <span th:text="${profile.firstName}">First</span></p>
     <p><strong>Last name:</strong> <span th:text="${profile.lastName}">Last</span></p>
