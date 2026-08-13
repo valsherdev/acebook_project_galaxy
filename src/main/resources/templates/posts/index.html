@@ -26,6 +26,17 @@
     <ul>
 
     <li class="post-box" th:each="post: ${posts}">
+        <div class="post-menu"
+             th:if="${post.user.username == #authentication.name}">
+
+            <button type="button" class="dots-button" onclick="toggleMenu(this)">⋮</button>
+
+            <div class="post-menu-dropdown">
+                <form th:action="@{'/posts/' + ${post.id} + '/delete'}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
         <p>
             Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
             <span th:text="${post.content}"></span>
