@@ -47,10 +47,8 @@ public class PostsController {
         model.addAttribute("currentUserFriendIds", friendIds);
 
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
-        User currentUser = getCurrentUser();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());
-        model.addAttribute("currentUser", currentUser);
         return "posts/index";
     }
 
