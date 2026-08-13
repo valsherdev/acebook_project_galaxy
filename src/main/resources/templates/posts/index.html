@@ -41,6 +41,15 @@
             <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
         </p>
 
+        <div th:if="${post.user != null and post.user.id != currentUserId}">
+            <form th:action="@{/friends/add}" method="post" th:if="${!currentUserFriendIds.contains(post.user.id)}">
+                <input type="hidden" name="friendId" th:value="${post.user.id}"/>
+                <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
+                <button class="friend-btn" type="submit">Add Friend</button>
+            </form>
+            <span class="friends-label" th:if="${currentUserFriendIds.contains(post.user.id)}">Friends</span>
+        </div>
+
         <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
             <button type="submit">❤️</button>
             <span th:text="${post.likes.size()} + ' likes'"></span>
@@ -65,6 +74,5 @@
     </li>
     </ul>
     </div>
-
     </body>
 </html>

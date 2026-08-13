@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit profile</title>
+    <link rel="stylesheet" href="/theme.css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h2>Edit profile</h2>
+
+    <form th:action="@{/profile/edit}" th:object="${profile}" method="post">
+        First name: <input type="text" th:field="*{firstName}" /><br/>
+        Last name: <input type="text" th:field="*{lastName}" /><br/>
+        Current location: <input type="text" th:field="*{currentLocation}" /><br/>
+        Hometown: <input type="text" th:field="*{hometown}" /><br/>
+        About me: <input type="text" th:field="*{aboutMe}" /><br/>
+        <button type="submit">Save changes</button>
+        <a th:href="@{/profile/}">Cancel</a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

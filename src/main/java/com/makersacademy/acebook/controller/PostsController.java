@@ -5,6 +5,7 @@ import com.makersacademy.acebook.model.Like;
 import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.CommentRepository;
+import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.LikeRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
@@ -32,10 +33,19 @@ public class PostsController {
     CommentRepository commentRepository;
 
     @Autowired
+    FriendshipRepository friendshipRepository;
+
+    @Autowired
     LikeRepository likeRepository;
 
     @GetMapping("/posts")
     public String index(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("currentUserId", currentUser.getId());
+
+        List<Long> friendIds = friendshipRepository.findFriendIdsByUserId(currentUser.getId());
+        model.addAttribute("currentUserFriendIds", friendIds);
+
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         User currentUser = getCurrentUser();
         model.addAttribute("posts", posts);

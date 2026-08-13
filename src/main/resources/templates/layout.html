@@ -15,7 +15,7 @@
         <ul class="nav-links">
             <li><a href="/posts">Home</a></li>
             <li><a href="#">Friends</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="/profile">Profile</a></li>
         </ul>
 
         <div class="sign-in-greeting" sec:authorize="isAuthenticated()" id="greeting">
@@ -33,6 +33,5 @@
     <div class="content-container">
         <section layout:fragment="content"></section>
     </div>
-
 </body>
 </html>
