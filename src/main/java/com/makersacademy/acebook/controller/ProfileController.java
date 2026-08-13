@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class ProfileController {
@@ -23,16 +22,26 @@ public class ProfileController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/profile/")
+    @GetMapping("/profile")
     public ModelAndView getProfile() {
-        return new ModelAndView("profile");
+        Profile profile = getOrCreateProfileOfCurrentUser();
+        ModelAndView modelAndView = new ModelAndView("profile");
+        modelAndView.addObject("profile", profile);
+        return modelAndView;
+    }
+
+    @GetMapping("/profile/edit")
+    public ModelAndView getEditProfile() {
+        Profile profile = getOrCreateProfileOfCurrentUser();
+        ModelAndView modelAndView = new ModelAndView("profile-edit");
+        modelAndView.addObject("profile", profile);
+        return modelAndView;
     }
 
 
-    @PostMapping("/profile/update/")
-    public RedirectView updateProfileDetails(@ModelAttribute Profile profileForm) {
+    @PostMapping("/profile/edit")
+    public String updateProfileDetails(@ModelAttribute("profile") Profile profileForm) {
         User currentUser = getCurrentUser();
-
         Profile profile = profileRepository.findByUser(currentUser)
                 .orElseGet(() -> {
                     Profile newProfile = new Profile();
@@ -47,8 +56,17 @@ public class ProfileController {
         profile.setAboutMe(profileForm.getAboutMe());
         profileRepository.save(profile);
 
-        return new RedirectView("profile");
+        return "redirect:/profile";
 
+    }
+
+    private Profile getOrCreateProfileOfCurrentUser() {
+        User currentUser = getCurrentUser();
+        return profileRepository.findByUser(getCurrentUser()).orElseGet(() -> {
+            Profile newProfile = new Profile();
+            newProfile.setUser(getCurrentUser());
+            return newProfile;
+        });
     }
 
 
@@ -60,4 +78,5 @@ public class ProfileController {
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
     }
+
 }

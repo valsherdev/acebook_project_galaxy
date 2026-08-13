@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" lang="en">
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-    <head lang="en">
-        <meta charset="UTF-8"/>
-        <title>Profile</title>
-        <link rel="stylesheet" href="/theme.css" />
-    </head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>My Profile</title>
+    <link rel="stylesheet" href="/theme.css" />
+</head>
 
-    <body>
-        <div layout:fragment="content">
+<body>
+<div layout:fragment="content">
+    <h2>My Profile</h2>
 
-        <form action="#" th:action="@{/profile}" th:object="${profile}" method="post">
-            First name: <input type="text" name="firstName" /><br/>
-            Last name: <input type="text" name="lastName" /><br/>
-            Current location: <input type="text" name="location" /><br/>
-            Hometown: <input type="text" name="hometown" /><br/>
-            About me: <input type="text" name="aboutMe" /><br/>
-            <button type="submit">Save</button>
-        </form>
+    <p><strong>First name:</strong> <span th:text="${profile.firstName}">First</span></p>
+    <p><strong>Last name:</strong> <span th:text="${profile.lastName}">Last</span></p>
+    <p><strong>Current location:</strong> <span th:text="${profile.currentLocation}">Location</span></p>
+    <p><strong>Hometown:</strong> <span th:text="${profile.hometown}">Hometown</span></p>
+    <p><strong>About me:</strong> <span th:text="${profile.aboutMe}">About</span></p>
 
-        </div>
-
-    </body>
+    <a th:href="@{/profile/edit}">Edit Profile</a>
+</div>
+</body>
 </html>
