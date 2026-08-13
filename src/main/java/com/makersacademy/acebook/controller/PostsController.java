@@ -109,4 +109,15 @@ public class PostsController {
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
     }
+
+    @GetMapping("/games")
+    public String games() {
+        return "forward:/games/games_index.html";
+    }
+
+    @GetMapping("/games/snake")
+    public String snake() {
+        return "forward:/games/snake/snake.html";
+    }
+
 }

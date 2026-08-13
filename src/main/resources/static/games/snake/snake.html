@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> 🐍 AceSnake </title>
+
+    <link rel="stylesheet" href="/games/snake/snake.css">
+</head>
+
+<body>
+
+<main class="snake-page">
+
+    <header class="game-header">
+
+        <a class="back-link" href="/games">
+            ← AceGames
+        </a>
+
+        <h1> 🐍 AceSnake </h1>
+
+        <div class="stats">
+            <span>
+                Score:
+                <strong id="score">0</strong>
+            </span>
+
+            <span>
+                Best:
+                <strong id="best">0</strong>
+            </span>
+        </div>
+
+    </header>
+
+
+    <section class="game-card">
+
+        <div class="canvas-wrap">
+
+            <canvas
+                    id="gameCanvas"
+                    width="400"
+                    height="400">
+            </canvas>
+
+            <div id="overlay" class="overlay">
+
+                <h2 id="overlayTitle">
+                    Snake
+                </h2>
+
+                <p id="overlayMessage">
+                    Use arrow keys or WASD to move.
+                </p>
+
+                <button id="startButton">
+                    Start Game
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Mobile controls -->
+
+        <div class="controls">
+
+            <button data-direction="up">
+                ↑
+            </button>
+
+            <div>
+                <button data-direction="left">
+                    ←
+                </button>
+
+                <button data-direction="down">
+                    ↓
+                </button>
+
+                <button data-direction="right">
+                    →
+                </button>
+            </div>
+
+        </div>
+
+
+        <p class="hint">
+            Get AceSnakey.
+        </p>
+
+    </section>
+
+
+    <section class="leaderboard-card">
+
+        <h2>
+            🏆 AceSnake Leaderboard
+        </h2>
+
+        <ol id="leaderboard">
+            <li>Loading...</li>
+        </ol>
+
+    </section>
+
+</main>
+
+<script src="/games/snake/snake.js"></script>
+
+</body>
+</html>
