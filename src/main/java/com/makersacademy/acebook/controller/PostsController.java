@@ -37,8 +37,10 @@ public class PostsController {
     @GetMapping("/posts")
     public String index(Model model) {
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
+        User currentUser = getCurrentUser();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());
+        model.addAttribute("currentUser", currentUser);
         return "posts/index";
     }
 

@@ -53,11 +53,12 @@
                 <button type="submit">Comment</button>
             </form>
         </div>
-        <details class="post-menu"
-                 th:if="${post.user.username == #authentication.name}">
+        <details class="post-menu">
             <summary class="dots-button">⋮</summary>
 
-            <form th:action="@{'/posts/' + ${post.id} + '/delete'}" method="post">
+            <form th:if="${post.user.id == currentUser.id}"
+                  th:action="@{'/posts/' + ${post.id} + '/delete'}"
+                  method="post">
                 <button type="submit">Delete</button>
             </form>
         </details>
