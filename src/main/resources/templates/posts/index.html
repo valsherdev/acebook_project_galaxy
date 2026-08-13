@@ -29,7 +29,7 @@
         <details class="post-menu">
             <summary class="dots-button">⋮</summary>
 
-            <form th:if="${post.user.id == currentUser.id}"
+            <form th:if="${post.user != null and currentUser != null and post.user.id == currentUser.id}"
                   th:action="@{'/posts/' + ${post.id} + '/delete'}"
                   method="post">
                 <button type="submit">Delete</button>
