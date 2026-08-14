@@ -46,8 +46,7 @@
         <img class="profile-pic-placeholder"
              th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
-             alt="Profile Picture"
-             style="max-width: 40px; height: auto;" />
+             alt="Profile Picture" />
 
         <p>
             Posted by
