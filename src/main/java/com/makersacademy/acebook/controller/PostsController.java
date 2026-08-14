@@ -1,5 +1,11 @@
 package com.makersacademy.acebook.controller;
 
+import com.makersacademy.acebook.model.*;
+import com.makersacademy.acebook.repository.CommentRepository;
+import com.makersacademy.acebook.repository.FriendshipRepository;
+import com.makersacademy.acebook.repository.LikeRepository;
+import com.makersacademy.acebook.repository.PostRepository;
+import com.makersacademy.acebook.repository.UserRepository;
 import com.makersacademy.acebook.model.Comment;
 import com.makersacademy.acebook.model.Like;
 import com.makersacademy.acebook.model.Post;
@@ -14,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,11 +51,16 @@ public class PostsController {
 
         model.addAttribute("currentUserId", currentUser.getId());
 
-        List<Long> friendIds = friendshipRepository.findFriendIdsByUserId(currentUser.getId());
+        List<Long> friendIds = friendshipRepository.findAcceptedFriendIdsByUserId(currentUser.getId());
         model.addAttribute("currentUserFriendIds", friendIds);
 
         Profile profile = profileRepository.findByUser(currentUser).orElse(null);
         model.addAttribute("profile", profile);
+
+        List<Friendship> outgoingPending = friendshipRepository.findOutgoingPendingRequests(currentUser.getId());
+        List<Long> pendingIds = new ArrayList<>();
+        for (Friendship friendship : outgoingPending) pendingIds.add(friendship.getFriend().getId());
+        model.addAttribute("currentUserPendingIds", pendingIds);
 
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);
@@ -82,6 +94,16 @@ public class PostsController {
         return "posts/show";
     }
 
+    @PostMapping("/posts/{postId}/delete")
+    public RedirectView delete(@PathVariable Long postId) {
+        Post post = repository.findById(postId).orElseThrow();
+        User currentUser = getCurrentUser();
+        if (post.getUser().getId().equals(currentUser.getId())) {
+            repository.delete(post);
+        }
+        return new RedirectView("/posts");
+    }
+
     @PostMapping("/posts/{postId}/likes")
     public RedirectView toggleLike(@PathVariable Long postId) {
         Post post = repository.findById(postId).orElseThrow();
@@ -95,7 +117,6 @@ public class PostsController {
         return new RedirectView("/posts");
     }
 
-
     private User getCurrentUser() {
         DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder
                 .getContext()
@@ -104,4 +125,10 @@ public class PostsController {
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
     }
+
+    @GetMapping("/games/snake")
+    public String snake() {
+        return "forward:/games/snake/snake.html";
+    }
+
 }

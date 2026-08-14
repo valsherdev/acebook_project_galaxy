@@ -34,6 +34,15 @@
     <li class="post-box" th:each="post: ${posts}" th:with="profile=${post.user?.profile},
         hasFirstName=${profile != null and !#strings.isEmpty(profile.firstName)},
         hasLastName=${profile != null and !#strings.isEmpty(profile.lastName)}">
+        <details class="post-menu">
+            <summary class="dots-button">⋮</summary>
+
+            <form th:if="${post.user != null and post.user.id == currentUserId}"
+                  th:action="@{'/posts/' + ${post.id} + '/delete'}"
+                  method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </details>
 
         <img class="profile-pic-placeholder"
              th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
@@ -62,12 +71,14 @@
 
 
         <div th:if="${post.user != null and post.user.id != currentUserId}">
-            <form th:action="@{/friends/add}" method="post" th:if="${!currentUserFriendIds.contains(post.user.id)}">
+            <form th:action="@{/friends/add}" method="post"
+                  th:if="${!currentUserFriendIds.contains(post.user.id) and !currentUserPendingIds.contains(post.user.id)}">
                 <input type="hidden" name="friendId" th:value="${post.user.id}"/>
                 <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
                 <button class="friend-btn" type="submit">Add Friend</button>
             </form>
             <span class="friends-label" th:if="${currentUserFriendIds.contains(post.user.id)}">Friends</span>
+            <span class="pending-label" th:if="${currentUserPendingIds.contains(post.user.id)}">Request sent</span>
         </div>
 
         <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
@@ -97,7 +108,6 @@
             </form>
         </div>
     </li>
-
     </ul>
     </div>
     </body>
