@@ -36,7 +36,10 @@
     <p><strong>Hometown:</strong> <span th:text="${profile.hometown}">Hometown</span></p>
     <p><strong>About me:</strong> <span th:text="${profile.aboutMe}">About</span></p>
 
-    <a th:href="@{/profile/edit}">Edit Profile</a>
+    <a th:if="${profile.user.id == currentUser.id}"
+       th:href="@{/profile/edit}">
+        Edit Profile
+    </a>
 
     <h2>Activity</h2>
 
