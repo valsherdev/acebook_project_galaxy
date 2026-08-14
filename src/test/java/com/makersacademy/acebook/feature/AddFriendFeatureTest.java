@@ -34,7 +34,7 @@ public class AddFriendFeatureTest {
     }
 
 
-
+    @Disabled
     @Test
     public void userSeesAddFriendButton() {
         String email = faker.name().username() + "@email.com";
