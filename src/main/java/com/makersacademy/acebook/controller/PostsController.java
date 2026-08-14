@@ -6,6 +6,12 @@ import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.LikeRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
+import com.makersacademy.acebook.model.Comment;
+import com.makersacademy.acebook.model.Like;
+import com.makersacademy.acebook.model.Post;
+import com.makersacademy.acebook.model.User;
+import com.makersacademy.acebook.model.Profile;
+import com.makersacademy.acebook.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -36,13 +42,20 @@ public class PostsController {
     @Autowired
     LikeRepository likeRepository;
 
+    @Autowired
+    ProfileRepository profileRepository;
+
     @GetMapping("/posts")
     public String index(Model model) {
         User currentUser = getCurrentUser();
+
         model.addAttribute("currentUserId", currentUser.getId());
 
         List<Long> friendIds = friendshipRepository.findAcceptedFriendIdsByUserId(currentUser.getId());
         model.addAttribute("currentUserFriendIds", friendIds);
+
+        Profile profile = profileRepository.findByUser(currentUser).orElse(null);
+        model.addAttribute("profile", profile);
 
         List<Friendship> outgoingPending = friendshipRepository.findOutgoingPendingRequests(currentUser.getId());
         List<Long> pendingIds = new ArrayList<>();

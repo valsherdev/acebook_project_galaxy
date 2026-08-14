@@ -11,4 +11,5 @@ public interface ProfileRepository extends CrudRepository<Profile, Long> {
 
     Optional<Profile> findByUser(User user);
 
+    Optional<Profile> getAllByFirstName(User userId);
 }

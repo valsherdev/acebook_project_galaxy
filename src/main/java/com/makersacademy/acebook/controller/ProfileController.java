@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
+
+import java.io.IOException;
 
 @Controller
 public class ProfileController {
@@ -53,7 +57,8 @@ public class ProfileController {
 
 
     @PostMapping("/profile/edit")
-    public String updateProfileDetails(@ModelAttribute("profile") Profile profileForm) {
+    public String updateProfileDetails(@ModelAttribute("profile") Profile profileForm,
+                                       @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
         User currentUser = getCurrentUser();
         Profile profile = profileRepository.findByUser(currentUser)
                 .orElseGet(() -> {
@@ -61,6 +66,10 @@ public class ProfileController {
                     newProfile.setUser(currentUser);
                     return newProfile;
                 });
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            profile.setProfilePicture(imageFile.getBytes());
+        }
 
         profile.setFirstName(profileForm.getFirstName());
         profile.setLastName(profileForm.getLastName());

@@ -3,6 +3,9 @@ package com.makersacademy.acebook.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 @Data
 @Entity
@@ -19,6 +22,9 @@ public class Profile {
     private String currentLocation;
     private String hometown;
 
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
+
     @Column(columnDefinition = "TEXT")
     private String aboutMe;
 
@@ -26,5 +32,12 @@ public class Profile {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
 
     private User user;
+
+    public String convertImageByteToString() {
+        if (this.profilePicture == null) {
+            return null;
+        }
+        return java.util.Base64.getEncoder().encodeToString(this.profilePicture);
+    }
 
 }
