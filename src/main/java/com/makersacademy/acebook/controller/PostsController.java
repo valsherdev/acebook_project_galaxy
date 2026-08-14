@@ -12,6 +12,7 @@ import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.model.Profile;
 import com.makersacademy.acebook.repository.*;
+import com.makersacademy.acebook.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -41,6 +42,9 @@ public class PostsController {
 
     @Autowired
     LikeRepository likeRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @Autowired
     ProfileRepository profileRepository;
@@ -84,6 +88,14 @@ public class PostsController {
         Post post = repository.findById(postId).orElseThrow();
         User currentUser = getCurrentUser();
         commentRepository.save(new Comment(content, post, currentUser));
+
+        if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
+            notificationRepository.save(new Notification(
+                    post.getUser(),
+                    currentUser.getUsername() + " commented on your post",
+                    "/posts/" + post.getId()
+            ));
+        }
         return new RedirectView("/posts");
     }
 
