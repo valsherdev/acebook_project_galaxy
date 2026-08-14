@@ -116,7 +116,7 @@ public class ProfileFeatureTest {
         assertTrue(pageText.contains("Last name: " + lastName));
     }
 
-    //Both first and last name filled out on profile, full name shows on users post
+    // First and last name saved successfully to profile, full name shows on users individual post
     @Test
     public void testUpdatingProfileSavesFirstAndLastNameAndRendersOnPostPage() {
         String email = faker.name().username() + "@email.com";
@@ -154,7 +154,7 @@ public class ProfileFeatureTest {
 
     }
 
-    // Only last name filled on profile, posts show users email on post (as full name is incomplete)
+    // Only last name saved on profile, posts show users email on post (as full name is incomplete)
     @Test
     public void testUpdatingOnlyLastNameRendersOnPostPageAsEmailAndNotIncompleteName() {
         String email = faker.name().username() + "@email.com";
@@ -190,7 +190,7 @@ public class ProfileFeatureTest {
 
     }
 
-    // Only first name filled on profile, posts show users email on post (as full name is incomplete)
+    // Only first name saved on profile, posts show users email on post (as full name is incomplete)
     @Test
     public void testUpdatingOnlyFirstNameRendersOnPostPageAsEmailAndNotIncompleteName() {
         String email = faker.name().username() + "@email.com";
