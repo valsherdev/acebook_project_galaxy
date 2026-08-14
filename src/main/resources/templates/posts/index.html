@@ -16,9 +16,10 @@
 
         <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post">
 
-            <img th:if="${profile.profilePicture != null}" class="profile-pic-placeholder"
-                 th:src="@{'data:image/jpeg;base64,' + ${profile.convertImageByteToString()}}"
-                 alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10"
+            <img class="profile-pic-placeholder"
+                 th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
+                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                 alt="Profile Picture"
                  style="max-width: 40px; height: auto;" />
 
                 <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
@@ -34,10 +35,12 @@
         hasFirstName=${profile != null and !#strings.isEmpty(profile.firstName)},
         hasLastName=${profile != null and !#strings.isEmpty(profile.lastName)}">
 
-        <img th:if="${profile.profilePicture != null}"
-             th:src="@{'data:image/jpeg;base64,' + ${profile.convertImageByteToString()}}"
+        <img class="profile-pic-placeholder"
+             th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
+                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
              alt="Profile Picture"
              style="max-width: 40px; height: auto;" />
+
         <p>
             Posted by
             <strong th:if="${hasFirstName} and ${hasLastName}"
@@ -73,8 +76,8 @@
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
 
             <div th:each="comment, commentStat : ${post.comments}" th:if="${commentStat.index < 3}"
-                 th:with="cProfile=${post.user?.profile}, hasBothNames=${profile != null and !#strings.isEmpty(profile.firstName) and
-                 !#strings.isEmpty(profile.lastName)}">
+                 th:with="cProfile=${comment.user?.profile}, hasBothNames=${profile != null and !#strings.isEmpty(cProfile.firstName) and
+                 !#strings.isEmpty(cProfile.lastName)}">
                 <span th:text="${hasBothNames ? cProfile.firstName + ' ' + cProfile.lastName + ': ' + comment.content
                       : comment.user.username + ': ' + comment.content}"
                 ></span>
