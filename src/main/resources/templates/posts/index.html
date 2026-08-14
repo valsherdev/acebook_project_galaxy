@@ -90,8 +90,7 @@
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
 
             <div th:each="comment, commentStat : ${post.comments}" th:if="${commentStat.index < 3}"
-                 th:with="cProfile=${comment.user?.profile}, hasBothNames=${profile != null and !#strings.isEmpty(cProfile.firstName) and
-                 !#strings.isEmpty(cProfile.lastName)}">
+                 th:with="cProfile=${comment.user?.profile}, hasBothNames=${cProfile != null and !#strings.isEmpty(cProfile.firstName) and !#strings.isEmpty(cProfile.lastName)}">
                 <span th:text="${hasBothNames ? cProfile.firstName + ' ' + cProfile.lastName + ': ' + comment.content
                       : comment.user.username + ': ' + comment.content}"
                 ></span>
