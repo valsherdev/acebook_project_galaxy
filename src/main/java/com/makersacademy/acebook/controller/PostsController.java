@@ -1,11 +1,7 @@
 package com.makersacademy.acebook.controller;
 
 import com.makersacademy.acebook.model.*;
-import com.makersacademy.acebook.repository.CommentRepository;
-import com.makersacademy.acebook.repository.FriendshipRepository;
-import com.makersacademy.acebook.repository.LikeRepository;
-import com.makersacademy.acebook.repository.PostRepository;
-import com.makersacademy.acebook.repository.UserRepository;
+import com.makersacademy.acebook.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -35,6 +31,9 @@ public class PostsController {
 
     @Autowired
     LikeRepository likeRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @GetMapping("/posts")
     public String index(Model model) {
@@ -71,6 +70,14 @@ public class PostsController {
         Post post = repository.findById(postId).orElseThrow();
         User currentUser = getCurrentUser();
         commentRepository.save(new Comment(content, post, currentUser));
+
+        if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
+            notificationRepository.save(new Notification(
+                    post.getUser(),
+                    currentUser.getUsername() + " commented on your post",
+                    "/posts/" + post.getId()
+            ));
+        }
         return new RedirectView("/posts");
     }
 

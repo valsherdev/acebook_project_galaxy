@@ -1,8 +1,10 @@
 package com.makersacademy.acebook.controller;
 
 import com.makersacademy.acebook.model.Friendship;
+import com.makersacademy.acebook.model.Notification;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.FriendshipRepository;
+import com.makersacademy.acebook.repository.NotificationRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,9 @@ public class FriendshipController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @GetMapping("/friends")
     public String index(Model model) {
@@ -67,6 +72,12 @@ public class FriendshipController {
             if (!alreadyExists) {
                 Friendship friendship = new Friendship(currentUser, friendUser, "PENDING");
                 friendshipRepository.save(friendship);
+
+                notificationRepository.save(new Notification(
+                        friendUser,
+                        currentUser.getUsername() + " sent you a friend request",
+                        "/friends"
+                ));
                 }
             }
         return new RedirectView("/friends");

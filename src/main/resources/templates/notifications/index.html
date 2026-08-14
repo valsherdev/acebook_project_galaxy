@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Notifications</title>
+</head>
+<body>
+
+<section layout:fragment="content">
+    <h1>Notifications</h1>
+
+    <div th:each="notification : ${notifications}">
+        <a th:href="@{${notification.link}}" th:text="${notification.message}"></a>
+        <span th:text="${#temporals.format(notification.createdAt, 'dd MMM, HH:mm')}"></span>
+    </div>
+
+    <p th:if="${notifications.isEmpty()}">No notifications yet.</p>
+</section>
+
+</body>
+</html>
