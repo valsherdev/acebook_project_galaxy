@@ -1,9 +1,6 @@
 package com.makersacademy.acebook.controller;
 
-import com.makersacademy.acebook.model.Comment;
-import com.makersacademy.acebook.model.Like;
-import com.makersacademy.acebook.model.Post;
-import com.makersacademy.acebook.model.User;
+import com.makersacademy.acebook.model.*;
 import com.makersacademy.acebook.repository.CommentRepository;
 import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.LikeRepository;
@@ -17,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +41,13 @@ public class PostsController {
         User currentUser = getCurrentUser();
         model.addAttribute("currentUserId", currentUser.getId());
 
-        List<Long> friendIds = friendshipRepository.findFriendIdsByUserId(currentUser.getId());
+        List<Long> friendIds = friendshipRepository.findAcceptedFriendIdsByUserId(currentUser.getId());
         model.addAttribute("currentUserFriendIds", friendIds);
+
+        List<Friendship> outgoingPending = friendshipRepository.findOutgoingPendingRequests(currentUser.getId());
+        List<Long> pendingIds = new ArrayList<>();
+        for (Friendship friendship : outgoingPending) pendingIds.add(friendship.getFriend().getId());
+        model.addAttribute("currentUserPendingIds", pendingIds);
 
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);

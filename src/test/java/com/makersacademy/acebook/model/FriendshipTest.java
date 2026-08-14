@@ -21,7 +21,13 @@ public class FriendshipTest {
     }
 
     @Test
-    public void friendInstantlyAccepted() {
+    public void statusCanBeSetToAccepted() {
         assertThat(friendship.getStatus(), containsString("ACCEPTED"));
+    }
+
+    @Test
+    public void defaultsToAcceptedIfNoStatusGiven() {
+        Friendship defaultFriendship = new Friendship();
+        assertThat(defaultFriendship.getStatus(), containsString("ACCEPTED"));
     }
 }
