@@ -51,7 +51,12 @@
                     th:text="${post.user.username}">Email
             </strong>
 
-            <strong th:if="${post.user == null}">Unknown</strong>
+            <strong th:if="${post.user == null}">Guest</strong>
+
+            <a th:if="${post.user != null}"
+               th:href="@{'/profile/' + ${post.user.id}}"
+               th:text="${post.user.username}">
+            </a>
         </p>
 
             <p th:text="${post.content}"></p>
