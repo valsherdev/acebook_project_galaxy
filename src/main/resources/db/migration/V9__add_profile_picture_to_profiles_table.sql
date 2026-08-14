@@ -1,0 +1,1 @@
+ALTER table profiles ADD COLUMN profile_picture BYTEA;

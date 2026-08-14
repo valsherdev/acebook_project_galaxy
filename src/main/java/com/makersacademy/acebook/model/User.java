@@ -15,6 +15,10 @@ public class User {
     private String username;
     private boolean enabled;
 
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
+
     public User() {
         this.enabled = TRUE;
     }

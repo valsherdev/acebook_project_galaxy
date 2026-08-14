@@ -5,13 +5,20 @@
       lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>Profile</title>
+    <title>My Profile</title>
     <link rel="stylesheet" href="/theme.css" />
     <link rel="stylesheet" href="/main.css" />
 </head>
 
 <body>
 <div layout:fragment="content">
+    <h2>My Profile</h2>
+    <p><strong>Profile Picture:</strong></p>
+    <img class="profile-pic-placeholder"
+         th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
+                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+         alt="Profile Picture"
+         style="max-width: 40px; height: auto;" />
 
     <h2>
     <span th:if="${profile.firstName != null and !profile.firstName.isBlank()}"
