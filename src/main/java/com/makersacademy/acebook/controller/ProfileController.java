@@ -39,6 +39,7 @@ public class ProfileController {
         ModelAndView modelAndView = new ModelAndView("profile");
         modelAndView.addObject("profile", profile);
         modelAndView.addObject("posts", posts);
+        modelAndView.addObject("currentUser", getCurrentUser());
         return modelAndView;
     }
 
@@ -89,6 +90,7 @@ public class ProfileController {
         ModelAndView modelAndView = new ModelAndView("profile");
         modelAndView.addObject("profile", profile);
         modelAndView.addObject("posts", posts);
+        modelAndView.addObject("currentUser", getCurrentUser());
 
         return modelAndView;
     }
