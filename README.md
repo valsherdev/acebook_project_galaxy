@@ -8,7 +8,7 @@ The application uses:
   - `faker` to generate fake names for testing
   - `junit4` for unit testing
   - `auth0` and `spring-security` for authentication and user management
-  - `lombok` to generate getters and setters for us
+  - `lombok` to generate getters and setters for us.
   
 Below, you'll find specific learning objectives for each tool.
 
