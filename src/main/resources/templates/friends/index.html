@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head lang="en">
+  <meta charset="UTF-8"/>
+  <title>Friends</title>
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+
+<div layout:fragment="content">
+
+  <h2>Friend requests</h2>
+  <div th:each="request : ${incomingRequests}">
+    <span th:text="${request.user.username}"></span>
+    <form th:action="@{'/friends/' + ${request.id} + '/accept'}" method="post" style="display:inline">
+      <button type="submit">Accept</button>
+    </form>
+    <form th:action="@{'/friends/' + ${request.id} + '/decline'}" method="post" style="display:inline">
+      <button type="submit">Decline</button>
+    </form>
+  </div>
+
+  <h2>Your friends</h2>
+  <div th:each="friend : ${friends}">
+    <span th:text="${friend.username}"></span>
+  </div>
+
+  <h2>People you may know</h2>
+  <div th:each="suggestion : ${suggestions}">
+    <span th:text="${suggestion.username}"></span>
+    <form th:action="@{/friends/add}" method="post" style="display:inline">
+      <input type="hidden" name="friendId" th:value="${suggestion.id}"/>
+      <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
+      <button type="submit">Add Friend</button>
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>

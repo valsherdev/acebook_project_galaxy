@@ -36,18 +36,25 @@
             </form>
         </details>
         <p>
-            Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+            Posted by
+            <span th:if="${post.user == null}">Guest</span>
+            <a th:if="${post.user != null}"
+               th:href="@{'/profile/' + ${post.user.id}}"
+               th:text="${post.user.username}">
+            </a>:
             <span th:text="${post.content}"></span>
             <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
         </p>
 
         <div th:if="${post.user != null and post.user.id != currentUserId}">
-            <form th:action="@{/friends/add}" method="post" th:if="${!currentUserFriendIds.contains(post.user.id)}">
+            <form th:action="@{/friends/add}" method="post"
+                  th:if="${!currentUserFriendIds.contains(post.user.id) and !currentUserPendingIds.contains(post.user.id)}">
                 <input type="hidden" name="friendId" th:value="${post.user.id}"/>
                 <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
                 <button class="friend-btn" type="submit">Add Friend</button>
             </form>
             <span class="friends-label" th:if="${currentUserFriendIds.contains(post.user.id)}">Friends</span>
+            <span class="pending-label" th:if="${currentUserPendingIds.contains(post.user.id)}">Request sent</span>
         </div>
 
         <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
