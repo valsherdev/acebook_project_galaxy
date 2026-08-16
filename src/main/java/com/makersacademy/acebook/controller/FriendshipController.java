@@ -45,6 +45,8 @@ public class FriendshipController {
 
         List<Friendship> incomingRequests = friendshipRepository.findIncomingPendingRequests(currentUser.getId());
 
+        List<Friendship> outgoingRequests = friendshipRepository.findOutgoingPendingRequests(currentUser.getId());
+
         List<User> allUsers = (List<User>) userRepository.findAll();
         List<User> suggestions = new ArrayList<>();
         for (User user : allUsers) {
@@ -57,6 +59,7 @@ public class FriendshipController {
 
         model.addAttribute("friends", friends);
         model.addAttribute("incomingRequests", incomingRequests);
+        model.addAttribute("outgoingRequests", outgoingRequests);
         model.addAttribute("suggestions", suggestions);
         return "friends/index";
     }
