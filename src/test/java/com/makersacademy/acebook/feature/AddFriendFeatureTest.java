@@ -34,7 +34,7 @@ public class AddFriendFeatureTest {
     }
 
 
-    @Disabled
+
     @Test
     public void userSeesAddFriendButton() {
         String email = faker.name().username() + "@email.com";
@@ -50,5 +50,7 @@ public class AddFriendFeatureTest {
         assertFalse(driver.findElements(By.xpath("//button[contains(text(), 'Add Friend')]")).isEmpty());
 
     }
+
+
 
 }
