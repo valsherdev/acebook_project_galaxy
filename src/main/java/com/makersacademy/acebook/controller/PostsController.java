@@ -125,14 +125,14 @@ public class PostsController {
             likeRepository.delete(existingLike.get());
         } else {
             likeRepository.save(new Like(post, currentUser));
-        }
 
-        if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
-            notificationRepository.save(new Notification(
-                    post.getUser(),
-                    currentUser.getUsername() + " liked your post",
-                    "/posts/" + post.getId()
-            ));
+            if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
+                notificationRepository.save(new Notification(
+                        post.getUser(),
+                        currentUser.getUsername() + " liked your post",
+                        "/posts/" + post.getId()
+                ));
+            }
         }
         return new RedirectView("/posts");
     }
