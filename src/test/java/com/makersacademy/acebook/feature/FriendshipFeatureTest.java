@@ -58,6 +58,12 @@ public class FriendshipFeatureTest {
         driver.findElement(By.name("password")).sendKeys("P@55qw0rd");
         driver.findElement(By.name("action")).click();
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("greeting")));
+
+        String otherUsername = faker.name().username() + "@email.com";
+        jdbcTemplate.update("INSERT INTO users (username, enabled) VALUES (?, true)", otherUsername);
+
         driver.get("http://localhost:8081/friends");
 
         assertFalse(driver.findElements(By.xpath("//button[contains(text(), 'Add Friend')]")).isEmpty());
