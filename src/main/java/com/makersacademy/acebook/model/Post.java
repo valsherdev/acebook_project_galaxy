@@ -36,9 +36,9 @@ public class Post {
     public List<String> getConvertedImages() {
         List<String> convertedImages = new ArrayList<>();
         if (this.images != null && !this.images.isBlank()) {
-            for (String img : this.images.split(",")) {
-                if (!img.isBlank()) {
-                    convertedImages.add(img);
+            for (String image : this.images.split(",")) {
+                if (!image.isBlank()) {
+                    convertedImages.add(image);
                 }
             }
         } return convertedImages;
