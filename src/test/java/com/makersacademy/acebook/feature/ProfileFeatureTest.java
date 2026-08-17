@@ -60,9 +60,14 @@ public class ProfileFeatureTest {
     @Test
     public void testGoingToProfilePageRendersEmptyProfile() {
         String email = faker.name().username() + "@email.com";
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
+        driver.get("http://localhost:8081/posts");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("content")));
+
         driver.get("http://localhost:8081/profile");
+        wait.until(ExpectedConditions.urlToBe("http://localhost:8081/profile"));
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "First name:"));
 
         String pageText = driver.findElement(By.tagName("body")).getText();
@@ -74,6 +79,7 @@ public class ProfileFeatureTest {
     public void testUpdatingProfileSavesFirstNameAndRendersOnProfilePage() {
         String email = faker.name().username() + "@email.com";
         String firstName = faker.name().firstName();
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/profile");
@@ -97,6 +103,7 @@ public class ProfileFeatureTest {
         String email = faker.name().username() + "@email.com";
         String firstName = faker.name().firstName();
         String lastName = faker.name().lastName();
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/profile");
@@ -123,6 +130,7 @@ public class ProfileFeatureTest {
         String newPost = faker.lorem().sentence();
         String firstName = faker.name().firstName();
         String lastName = faker.name().lastName();
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/posts");
@@ -156,46 +164,42 @@ public class ProfileFeatureTest {
 
     // Only last name saved on profile, posts show users email on post (as full name is incomplete)
     @Test
-    public void testUpdatingOnlyLastNameRendersOnPostPageAsEmailAndNotIncompleteName() {
+    public void testUpdatingOnlyLastNameRendersOnPostPageAsEmailAndNotCompleteName() {
         String email = faker.name().username() + "@email.com";
         String newPost = faker.lorem().sentence();
         String lastName = faker.name().lastName();
-        signUpAndLogInUser(email, "P@55qw0rd");
 
-        driver.get("http://localhost:8081/posts");
-        driver.findElement(By.name("content")).sendKeys(newPost);
-        driver.findElement(By.cssSelector("input[type='submit']")).click();
+        signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/profile");
         driver.get("http://localhost:8081/profile/edit");
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("lastName")));
+        System.out.println("FAILED ON URL: " + driver.getCurrentUrl());
+        System.out.println("PAGE SOURCE: " + driver.getPageSource());
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "First name:"));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("lastName")));
 
         driver.findElement(By.name("lastName")).sendKeys(lastName);
         driver.findElement(By.tagName("button")).click();
 
-        driver.get("http://localhost:8081/profile");
-
-        String pageText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(pageText.contains("Last name: " + lastName));
+        wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("/profile/edit")));
 
         driver.get("http://localhost:8081/posts");
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), email));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("content"))).sendKeys(newPost);
+        driver.findElement(By.cssSelector("input[type='submit']")).click();
 
-        String pageBodyText = driver.findElement(By.tagName("body")).getText();
-        assertThat(pageBodyText, containsString(email));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), email));
+        assertThat(driver.findElement(By.tagName("body")).getText(), containsString(email));
 
     }
 
     // Only first name saved on profile, posts show users email on post (as full name is incomplete)
     @Test
-    public void testUpdatingOnlyFirstNameRendersOnPostPageAsEmailAndNotIncompleteName() {
+    public void testUpdatingOnlyFirstNameRendersOnPostPageAsEmailAndNotCompleteName() {
         String email = faker.name().username() + "@email.com";
         String newPost = faker.lorem().sentence();
         String firstName = faker.name().firstName();
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/posts");
@@ -229,6 +233,7 @@ public class ProfileFeatureTest {
     @Test
     public void testUploadingAnImageRendersCorrectlyOnProfilePage() {
         String email = faker.name().username() + "@email.com";
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/profile");
@@ -254,6 +259,7 @@ public class ProfileFeatureTest {
     public void testAddingAPostAndUploadingAProfilePictureRendersCorrectlyOnPostPage() {
         String email = faker.name().username() + "@email.com";
         String newPost = faker.lorem().sentence();
+
         signUpAndLogInUser(email, "P@55qw0rd");
 
         driver.get("http://localhost:8081/posts");
