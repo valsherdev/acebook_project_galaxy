@@ -60,7 +60,7 @@ public class SnakeController {
 
         scoreRepository.save(
                 new Snake(
-                        currentUser.getUsername(),
+                        currentUser.getName(),
                         request.score()
                 )
         );

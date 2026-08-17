@@ -50,17 +50,12 @@
 
         <p>
             Posted by
-            <a th:if="${hasFirstName} and ${hasLastName}"
+            <a th:if="${post.user != null}"
                th:href="@{'/profile/' + ${post.user.id}}"
-               th:text="${post.user.profile.firstName} + ' ' + ${post.user.profile.lastName}">First and Last name
+               th:text="${post.user.name}">
+                Name
             </a>
-
-            <a th:unless="${hasFirstName} and ${hasLastName}"
-                    th:href="@{'/profile/' + ${post.user.id}}"
-                    th:text="${post.user.username}">Email
-            </a>
-
-            <strong th:if="${post.user == null}">Guest</strong>
+            <strong th:if="${post.user == null}">Guest</strong>:
 
         </p>
 

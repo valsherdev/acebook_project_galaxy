@@ -9,13 +9,25 @@
 
 <a th:href="@{/posts}">&larr; Back to feed</a>
 <p>
-    Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+    Posted by
+    <a th:if="${post.user != null}"
+       th:href="@{'/profile/' + ${post.user.id}}"
+       th:text="${post.user.name}">
+        Name
+    </a>
+    <strong th:if="${post.user == null}">Guest</strong>:
     <span th:text="${post.content}"></span>
     <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
 </p>
 <h4>Comments</h4>
 <div th:each="comment : ${post.comments}">
-    <span th:text="${comment.user.username} + ': ' + ${comment.content}"></span>
+    <a th:if="${comment.user != null}"
+       th:href="@{'/profile/' + ${comment.user.id}}"
+       th:text="${comment.user.name}">
+        Name
+    </a>
+    <strong th:if="${comment.user == null}">Guest</strong>
+    <span th:text="': ' + ${comment.content}"></span>
     <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
 </div>
 
