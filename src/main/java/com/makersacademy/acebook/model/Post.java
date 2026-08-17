@@ -29,13 +29,23 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Like> likes;
 
+    private byte[] image;
+
+    public String convertImageByteToString() {
+        if (this.image == null) {
+            return null;
+        }
+        return java.util.Base64.getEncoder().encodeToString(this.image);
+    }
+
     public Post() {}
 
-    public Post(String content, User user) {
+    public Post(String content, User user, byte[] image) {
 
         this.content = content;
         this.user = user;
         this.createdAt = LocalDateTime.now();
+        this.image = image;
     }
 
 }
