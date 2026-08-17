@@ -19,8 +19,7 @@
             <img class="profile-pic-placeholder"
                  th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
-                 alt="Profile Picture"
-                 style="max-width: 40px; height: auto;" />
+                 alt="Profile Picture" />
 
                 <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
             <div class="post-form-actions">
@@ -47,8 +46,7 @@
         <img class="profile-pic-placeholder"
              th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
-             alt="Profile Picture"
-             style="max-width: 40px; height: auto;" />
+             alt="Profile Picture" />
 
         <p>
             Posted by
@@ -90,8 +88,7 @@
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
 
             <div th:each="comment, commentStat : ${post.comments}" th:if="${commentStat.index < 3}"
-                 th:with="cProfile=${comment.user?.profile}, hasBothNames=${profile != null and !#strings.isEmpty(cProfile.firstName) and
-                 !#strings.isEmpty(cProfile.lastName)}">
+                 th:with="cProfile=${comment.user?.profile}, hasBothNames=${cProfile != null and !#strings.isEmpty(cProfile.firstName) and !#strings.isEmpty(cProfile.lastName)}">
                 <span th:text="${hasBothNames ? cProfile.firstName + ' ' + cProfile.lastName + ': ' + comment.content
                       : comment.user.username + ': ' + comment.content}"
                 ></span>

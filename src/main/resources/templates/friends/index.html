@@ -22,6 +22,12 @@
     </form>
   </div>
 
+  <h2>Requests you've sent</h2>
+  <div th:each="request : ${outgoingRequests}">
+    <span th:text="${request.friend.username}"></span>
+    <span>Pending</span>
+  </div>
+
   <h2>Your friends</h2>
   <div th:each="friend : ${friends}">
     <span th:text="${friend.username}"></span>
