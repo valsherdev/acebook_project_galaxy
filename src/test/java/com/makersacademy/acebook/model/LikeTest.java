@@ -7,7 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class LikeTest {
     private User user = new User("testuser");
-    private Post post = new Post("hello", user);
+    private Post post = new Post("hello", user, null);
     private Like like = new Like(post, user);
 
     @Test

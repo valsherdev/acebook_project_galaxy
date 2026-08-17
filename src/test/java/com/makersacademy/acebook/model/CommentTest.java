@@ -7,7 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CommentTest {
     private User user = new User("testuser");
-    private Post post = new Post("hello", user);
+    private Post post = new Post("hello", user, null);
     private Comment comment = new Comment("nice post!", post, user);
 
     @Test
