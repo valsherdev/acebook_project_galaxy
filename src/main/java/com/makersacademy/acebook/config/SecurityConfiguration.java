@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/images/**", "/theme.css", "/css/**", "/profile/**").permitAll()
+                        .requestMatchers("/", "/images/**", "/theme.css", "/css/**", "/profile/**", "/posts/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
