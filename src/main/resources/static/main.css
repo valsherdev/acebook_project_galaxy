@@ -117,3 +117,147 @@
     border: 1px solid #ddd;
     padding: 5px;
 }
+
+.friends-page {
+    width: 100%;
+}
+
+.friends-page h2 {
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+
+    font-size: 1.25rem;
+    color: #2c194f;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.friends-page h2:first-child {
+    margin-top: 0;
+}
+
+.friend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 56px;
+    margin-bottom: 0.6rem;
+    padding: 0.75rem 1rem;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition:
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+}
+
+.friend-row:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(44, 25, 79, 0.08);
+}
+
+.friend-username {
+    flex: 1;
+    color: #334155;
+    font-weight: 600;
+}
+
+.friend-row form {
+    margin: 0;
+}
+
+.friend-row .friend-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+.friend-decline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 14px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #f1f5f9;
+    color: #64748b;
+
+    cursor: pointer;
+
+    transition:
+            background-color 0.2s ease,
+            color 0.2s ease;
+}
+
+.friend-decline:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.friend-pending {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 10px;
+
+    background: #eef2ff;
+    color: #4f46e5;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.friend-simple {
+    display: flex;
+    align-items: center;
+
+    min-height: 56px;
+    margin-bottom: 0.6rem;
+    padding: 0.75rem 1rem;
+
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    color: #334155;
+    font-weight: 600;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.friend-simple:hover {
+    box-shadow: 0 3px 8px rgba(44, 25, 79, 0.08);
+}
+
+@media (max-width: 600px) {
+
+    .friend-row {
+        flex-wrap: wrap;
+    }
+
+    .friend-username {
+        flex-basis: 100%;
+    }
+
+    .friend-row form {
+        flex: 1;
+    }
+
+    .friend-row .friend-btn,
+    .friend-row .friend-decline {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .friend-pending {
+        margin-left: auto;
+    }
+}
