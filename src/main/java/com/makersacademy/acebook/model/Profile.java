@@ -33,6 +33,9 @@ public class Profile {
 
     private User user;
 
+    public Profile(String firstName, String lastName, String currentLocation, String hometown, Byte profilePicture, String aboutMe) {
+    }
+
     public String convertImageByteToString() {
         if (this.profilePicture == null) {
             return null;

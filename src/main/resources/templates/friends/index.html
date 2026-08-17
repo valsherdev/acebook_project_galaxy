@@ -9,33 +9,33 @@
 </head>
 <body>
 
-<div layout:fragment="content">
+<div layout:fragment="content" class="friends-page">
 
   <h2>Friend requests</h2>
-  <div th:each="request : ${incomingRequests}">
-    <span th:text="${request.user.username}"></span>
+  <div class="friend-row" th:each="request : ${incomingRequests}">
+    <span class="friend-username" th:text="${request.user.username}"></span>
     <form th:action="@{'/friends/' + ${request.id} + '/accept'}" method="post" style="display:inline">
-      <button type="submit">Accept</button>
+      <button type="submit" class="friend-btn">Accept</button>
     </form>
     <form th:action="@{'/friends/' + ${request.id} + '/decline'}" method="post" style="display:inline">
-      <button type="submit">Decline</button>
+      <button type="submit" class="friend-decline">Decline</button>
     </form>
   </div>
 
   <h2>Requests you've sent</h2>
-  <div th:each="request : ${outgoingRequests}">
-    <span th:text="${request.friend.username}"></span>
-    <span>Pending</span>
+  <div class="friend-row" th:each="request : ${outgoingRequests}">
+    <span class="friend-username" th:text="${request.friend.username}"></span>
+    <span class="friend-pending">Pending</span>
   </div>
 
   <h2>Your friends</h2>
-  <div th:each="friend : ${friends}">
+  <div class="friend-simple" th:each="friend : ${friends}">
     <span th:text="${friend.username}"></span>
   </div>
 
   <h2>People you may know</h2>
-  <div th:each="suggestion : ${suggestions}">
-    <span th:text="${suggestion.username}"></span>
+  <div class="friend-row" th:each="suggestion : ${suggestions}">
+    <span class="friend-username" th:text="${suggestion.username}"></span>
     <form th:action="@{/friends/add}" method="post" style="display:inline">
       <input type="hidden" name="friendId" th:value="${suggestion.id}"/>
       <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
