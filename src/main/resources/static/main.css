@@ -296,10 +296,12 @@
     height: 400px;
 }
 
-.image-upload-icon {
-    font-size: 30px;
+.upload-icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
     cursor: pointer;
-    margin-left: auto;
+    vertical-align: middle;
 }
 
 .image-upload-icon input[type="file"] {
