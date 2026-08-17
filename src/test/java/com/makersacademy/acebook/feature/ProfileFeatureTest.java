@@ -174,9 +174,6 @@ public class ProfileFeatureTest {
         driver.get("http://localhost:8081/profile");
         driver.get("http://localhost:8081/profile/edit");
 
-        System.out.println("FAILED ON URL: " + driver.getCurrentUrl());
-        System.out.println("PAGE SOURCE: " + driver.getPageSource());
-
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("lastName")));
 
         driver.findElement(By.name("lastName")).sendKeys(lastName);
