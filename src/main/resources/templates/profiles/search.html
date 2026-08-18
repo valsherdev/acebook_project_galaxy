@@ -31,8 +31,9 @@
   <div th:if="${users != null and !#lists.isEmpty(users)}">
     <div class="profile-list">
       <div th:each="user : ${users}">
-        <strong th:if="${user.username != null}"
-                th:text="${user.username}"></strong>
+        <strong th:text="${user.profile != null and user.profile.firstName != null and (#strings.containsIgnoreCase(user.profile.firstName, searchQuery)
+                or (user.profile.lastName != null and #strings.containsIgnoreCase(user.profile.lastName, searchQuery))) ?
+                (user.profile.firstName + (user.profile.lastName != null ? ' ' + user.profile.lastName : '')) : user.username}"></strong>
 
         <a th:href="@{/profile/{id}(id=${user.id})}">View profile</a>
 

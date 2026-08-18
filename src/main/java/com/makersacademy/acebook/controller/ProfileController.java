@@ -112,12 +112,6 @@ public class ProfileController {
         List<Profile> matchingProfiles;
         List<User> matchingUsernames;
 
-//        if (query != null && !query.trim().isEmpty()) {
-//            matchingProfiles = profileRepository.findByFirstNameContainingIgnoreCase(query.trim());
-//        } else {
-//            matchingProfiles = Collections.emptyList();
-//        }
-
         if (query != null && !query.trim().isEmpty()) {
             matchingProfiles = profileRepository.findByFirstNameContainingIgnoreCase(query.trim());
         } else {
