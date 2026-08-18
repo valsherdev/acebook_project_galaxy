@@ -407,3 +407,7 @@
     border-radius: 4px;
     cursor: zoom-out;
 }
+
+.post-box > a {
+    text-decoration: none;
+}
