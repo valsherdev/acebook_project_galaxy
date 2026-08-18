@@ -40,7 +40,7 @@
     </div>
 
     <ul>
-        <li class="post-box" th:each="post : ${posts}">
+        <li class="post-box" th:id="${'post-' + post.id}" th:each="post : ${posts}">
 
             <details class="post-menu">
                 <summary class="dots-button">⋮</summary>

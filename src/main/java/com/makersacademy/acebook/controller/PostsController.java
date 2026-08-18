@@ -147,7 +147,8 @@ public class PostsController {
 
         }
         String currentUrl = request.getHeader("Referer");
-        return new RedirectView(currentUrl != null ? currentUrl : "/posts");
+        String baseUrl = (currentUrl != null && !currentUrl.isEmpty()) ? currentUrl : "/posts";
+        return new RedirectView(baseUrl + "#post-" + postId);
     }
 
     @GetMapping("/posts/{id}")
@@ -186,7 +187,8 @@ public class PostsController {
             }
         }
         String currentUrl = request.getHeader("Referer");
-        return new RedirectView(currentUrl != null ? currentUrl : "/posts#post-" + postId);
+        String baseUrl = (currentUrl != null && !currentUrl.isEmpty()) ? currentUrl : "/posts";
+        return new RedirectView(baseUrl + "#post-" + postId);
     }
 
     private User getCurrentUser() {
