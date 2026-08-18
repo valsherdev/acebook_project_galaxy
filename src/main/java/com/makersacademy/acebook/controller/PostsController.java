@@ -98,7 +98,7 @@ public class PostsController {
         if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
             notificationRepository.save(new Notification(
                     post.getUser(),
-                    currentUser.getUsername() + " commented on your post",
+                    currentUser.getName() + " commented on your post",
                     "/posts/" + post.getId()
             ));
         }
@@ -135,7 +135,7 @@ public class PostsController {
             if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
                 notificationRepository.save(new Notification(
                         post.getUser(),
-                        currentUser.getUsername() + " liked your post",
+                        currentUser.getName() + " liked your post",
                         "/posts/" + post.getId()
                 ));
             }
