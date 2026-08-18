@@ -341,3 +341,7 @@
     border-radius: 4px;
     cursor: zoom-out;
 }
+
+.like-reload {
+    scroll-margin-top: 450px;
+}

@@ -91,10 +91,12 @@
             <span class="pending-label" th:if="${currentUserPendingIds.contains(post.user.id)}">Request sent</span>
         </div>
 
+        <div class="like-reload" th:id="${'post-' + post.id}">
         <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
             <button type="submit">❤️</button>
             <span th:text="${post.likes.size()} + ' likes'"></span>
         </form>
+        </div>
 
         <div>
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>

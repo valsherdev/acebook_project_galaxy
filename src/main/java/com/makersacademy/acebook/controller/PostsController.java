@@ -170,7 +170,8 @@ public class PostsController {
                 ));
             }
         }
-        return new RedirectView("/posts");
+//        return new RedirectView("/posts");
+        return new RedirectView("/posts#post-" + postId);
     }
 
     private User getCurrentUser() {
