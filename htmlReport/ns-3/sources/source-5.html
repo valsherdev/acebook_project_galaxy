@@ -1,0 +1,242 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProfileController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.makersacademy.acebook.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: ProfileController (com.makersacademy.acebook.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2%
+  </span>
+  <span class="absValue">
+    (1/51)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.makersacademy.acebook.controller;
+&nbsp;
+&nbsp;import com.makersacademy.acebook.model.Profile;
+&nbsp;import com.makersacademy.acebook.model.User;
+&nbsp;import com.makersacademy.acebook.model.Post;
+&nbsp;import com.makersacademy.acebook.repository.PostRepository;
+&nbsp;import com.makersacademy.acebook.repository.ProfileRepository;
+&nbsp;import com.makersacademy.acebook.repository.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.security.core.context.SecurityContextHolder;
+&nbsp;import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.ModelAttribute;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestParam;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import org.springframework.web.servlet.ModelAndView;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;@Controller
+<b class="fc">&nbsp;public class ProfileController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    ProfileRepository profileRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    PostRepository postRepository;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/profile&quot;)
+&nbsp;    public ModelAndView getProfile() {
+<b class="nc">&nbsp;        Profile profile = getOrCreateProfileOfCurrentUser();</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Post&gt; posts =</b>
+<b class="nc">&nbsp;                postRepository.findAllByUserIdOrderByCreatedAtDesc(profile.getUser().getId());</b>
+&nbsp;
+<b class="nc">&nbsp;        ModelAndView modelAndView = new ModelAndView(&quot;profile&quot;);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;profile&quot;, profile);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;posts&quot;, posts);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;currentUser&quot;, getCurrentUser());</b>
+<b class="nc">&nbsp;        return modelAndView;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/profile/edit&quot;)
+&nbsp;    public ModelAndView getEditProfile() {
+<b class="nc">&nbsp;        Profile profile = getOrCreateProfileOfCurrentUser();</b>
+<b class="nc">&nbsp;        ModelAndView modelAndView = new ModelAndView(&quot;profile-edit&quot;);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;profile&quot;, profile);</b>
+<b class="nc">&nbsp;        return modelAndView;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/profile/edit&quot;)
+&nbsp;    public String updateProfileDetails(@ModelAttribute(&quot;profile&quot;) Profile profileForm,
+&nbsp;                                       @RequestParam(value = &quot;imageFile&quot;, required = false) MultipartFile imageFile) throws IOException {
+<b class="nc">&nbsp;        User currentUser = getCurrentUser();</b>
+<b class="nc">&nbsp;        Profile profile = profileRepository.findByUser(currentUser)</b>
+<b class="nc">&nbsp;                .orElseGet(() -&gt; {</b>
+<b class="nc">&nbsp;                    Profile newProfile = new Profile();</b>
+<b class="nc">&nbsp;                    newProfile.setUser(currentUser);</b>
+<b class="nc">&nbsp;                    return newProfile;</b>
+&nbsp;                });
+&nbsp;
+<b class="nc">&nbsp;        if (imageFile != null &amp;&amp; !imageFile.isEmpty()) {</b>
+<b class="nc">&nbsp;            profile.setProfilePicture(imageFile.getBytes());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        profile.setFirstName(profileForm.getFirstName());</b>
+<b class="nc">&nbsp;        profile.setLastName(profileForm.getLastName());</b>
+<b class="nc">&nbsp;        profile.setCurrentLocation(profileForm.getCurrentLocation());</b>
+<b class="nc">&nbsp;        profile.setHometown(profileForm.getHometown());</b>
+<b class="nc">&nbsp;        profile.setAboutMe(profileForm.getAboutMe());</b>
+<b class="nc">&nbsp;        profileRepository.save(profile);</b>
+&nbsp;
+<b class="nc">&nbsp;        return &quot;redirect:/profile&quot;;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/profile/{userId}&quot;)
+&nbsp;    public ModelAndView getUserProfile(@PathVariable Long userId) {
+<b class="nc">&nbsp;        User user = userRepository.findById(userId).orElseThrow();</b>
+&nbsp;
+<b class="nc">&nbsp;        Profile profile = profileRepository.findByUser(user)</b>
+<b class="nc">&nbsp;                .orElseGet(() -&gt; {</b>
+<b class="nc">&nbsp;                    Profile newProfile = new Profile();</b>
+<b class="nc">&nbsp;                    newProfile.setUser(user);</b>
+<b class="nc">&nbsp;                    return profileRepository.save(newProfile);</b>
+&nbsp;                });
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Post&gt; posts =</b>
+<b class="nc">&nbsp;                postRepository.findAllByUserIdOrderByCreatedAtDesc(userId);</b>
+&nbsp;
+<b class="nc">&nbsp;        ModelAndView modelAndView = new ModelAndView(&quot;profile&quot;);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;profile&quot;, profile);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;posts&quot;, posts);</b>
+<b class="nc">&nbsp;        modelAndView.addObject(&quot;currentUser&quot;, getCurrentUser());</b>
+&nbsp;
+<b class="nc">&nbsp;        return modelAndView;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Profile getOrCreateProfileOfCurrentUser() {
+<b class="nc">&nbsp;        User currentUser = getCurrentUser();</b>
+<b class="nc">&nbsp;        return profileRepository.findByUser(getCurrentUser()).orElseGet(() -&gt; {</b>
+<b class="nc">&nbsp;            Profile newProfile = new Profile();</b>
+<b class="nc">&nbsp;            newProfile.setUser(getCurrentUser());</b>
+<b class="nc">&nbsp;            return profileRepository.save(newProfile);</b>
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private User getCurrentUser() {
+&nbsp;        DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder
+<b class="nc">&nbsp;                .getContext()</b>
+<b class="nc">&nbsp;                .getAuthentication()</b>
+<b class="nc">&nbsp;                .getPrincipal();</b>
+<b class="nc">&nbsp;        String username = (String) principal.getAttributes().get(&quot;email&quot;);</b>
+<b class="nc">&nbsp;        return userRepository.findUserByUsername(username).orElseThrow();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-08-17 11:39</div>
+</div>
+</body>
+</html>

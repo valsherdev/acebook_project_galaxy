@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>My Profile</title>
+  <link rel="stylesheet" href="/theme.css" />
+  <link rel="stylesheet" href="/main.css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+
+  <div th:if="${profiles != null and !#lists.isEmpty(profiles)}">
+    <h2>Search results:</h2>
+    <div class="profile-list">
+      <div th:each="profile : ${profiles}">
+        <strong th:if="${profile.firstName != null}"
+                th:text="${profile.firstName + ' ' + profile.lastName}">Found name</strong>
+
+        <a th:href="@{/profile/{id}(id=${profile.user.id})}">View profile</a>
+        </div>
+      </div>
+    </div>
+
+  <br>
+  <br>
+
+  <div th:if="${users != null and !#lists.isEmpty(users)}">
+    <div class="profile-list">
+      <div th:each="user : ${users}">
+        <strong th:if="${user.username != null}"
+                th:text="${user.username}"></strong>
+
+        <a th:href="@{/profile/{id}(id=${user.id})}">View profile</a>
+
+        </div>
+    </div>
+  </div>
+
+  <div th:if="${searchQuery != null and searchQuery != '' and (profiles == null or #lists.isEmpty(profiles)) and (users == null or #lists.isEmpty(users))}">
+    <p>No profiles found matching "<span th:text="${searchQuery}"></span>".</p>
+  </div>
+</div>
+</body>
+</html>

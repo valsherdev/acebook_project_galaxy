@@ -1,0 +1,99 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FriendshipRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.makersacademy.acebook.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: FriendshipRepository (com.makersacademy.acebook.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">FriendshipRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.makersacademy.acebook.repository;
+&nbsp;
+&nbsp;import com.makersacademy.acebook.model.Friendship;
+&nbsp;import com.makersacademy.acebook.model.User;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;public interface FriendshipRepository extends CrudRepository&lt;Friendship, Long&gt; {
+&nbsp;    boolean existsByUserAndFriend(User user, User friend);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT friendship.friend.id FROM Friendship AS friendship WHERE friendship.user.id = :userId AND friendship.status = &#39;ACCEPTED&#39;&quot;)
+&nbsp;    List&lt;Long&gt; findFriendIdsByUserId(@Param(&quot;userId&quot;) Long userId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT CASE WHEN friendship.user.id = :userId THEN friendship.friend.id ELSE friendship.user.id END &quot; +
+&nbsp;            &quot;FROM Friendship AS friendship &quot; +
+&nbsp;            &quot;WHERE (friendship.user.id = :userId OR friendship.friend.id = :userId) AND friendship.status = &#39;ACCEPTED&#39;&quot;)
+&nbsp;    List&lt;Long&gt; findAcceptedFriendIdsByUserId(@Param(&quot;userId&quot;) Long userId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT friendship FROM Friendship AS friendship WHERE friendship.user.id = :userId AND friendship.status = &#39;PENDING&#39;&quot;)
+&nbsp;    List&lt;Friendship&gt; findOutgoingPendingRequests(@Param(&quot;userId&quot;) Long userId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT friendship FROM Friendship AS friendship WHERE friendship.friend.id = :userId AND friendship.status = &#39;PENDING&#39;&quot;)
+&nbsp;    List&lt;Friendship&gt; findIncomingPendingRequests(@Param(&quot;userId&quot;) Long userId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT friendship FROM Friendship AS friendship WHERE (friendship.user.id = :id1 AND friendship.friend.id = :id2) OR (friendship.user.id = :id2 AND friendship.friend.id = :id1)&quot;)
+&nbsp;    Optional&lt;Friendship&gt; findBetweenUsers(@Param(&quot;id1&quot;) Long id1, @Param(&quot;id2&quot;) Long id2);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-08-17 11:39</div>
+</div>
+</body>
+</html>

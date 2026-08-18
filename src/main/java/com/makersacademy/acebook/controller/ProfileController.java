@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Collections;
 import java.util.List;
 
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class ProfileController {
         List<Post> posts =
                 postRepository.findAllByUserIdOrderByCreatedAtDesc(profile.getUser().getId());
 
-        ModelAndView modelAndView = new ModelAndView("profile");
+        ModelAndView modelAndView = new ModelAndView("profiles/profile");
         modelAndView.addObject("profile", profile);
         modelAndView.addObject("posts", posts);
         modelAndView.addObject("currentUser", getCurrentUser());
@@ -50,7 +52,7 @@ public class ProfileController {
     @GetMapping("/profile/edit")
     public ModelAndView getEditProfile() {
         Profile profile = getOrCreateProfileOfCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("profile-edit");
+        ModelAndView modelAndView = new ModelAndView("profiles/profile-edit");
         modelAndView.addObject("profile", profile);
         return modelAndView;
     }
@@ -96,13 +98,47 @@ public class ProfileController {
         List<Post> posts =
                 postRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
 
-        ModelAndView modelAndView = new ModelAndView("profile");
+        ModelAndView modelAndView = new ModelAndView("profiles/profile");
         modelAndView.addObject("profile", profile);
         modelAndView.addObject("posts", posts);
         modelAndView.addObject("currentUser", getCurrentUser());
 
         return modelAndView;
     }
+
+    @GetMapping("/profiles/search")
+    public ModelAndView searchProfiles(@RequestParam(name = "query", required = false) String query) {
+        ModelAndView modelAndView = new ModelAndView("profiles/search");
+        List<Profile> matchingProfiles;
+        List<User> matchingUsernames;
+
+//        if (query != null && !query.trim().isEmpty()) {
+//            matchingProfiles = profileRepository.findByFirstNameContainingIgnoreCase(query.trim());
+//        } else {
+//            matchingProfiles = Collections.emptyList();
+//        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            matchingProfiles = profileRepository.findByFirstNameContainingIgnoreCase(query.trim());
+        } else {
+            matchingProfiles = Collections.emptyList();
+        }
+
+        if (query != null && !query.trim().isEmpty()) {
+            matchingUsernames = userRepository.findByUsernameContainingIgnoreCase(query.trim());
+        } else {
+            matchingUsernames = Collections.emptyList();
+        }
+
+
+        modelAndView.addObject("profiles", matchingProfiles);
+        modelAndView.addObject("users", matchingUsernames);
+        modelAndView.addObject("searchQuery", query);
+
+
+        return modelAndView;
+    }
+
 
     private Profile getOrCreateProfileOfCurrentUser() {
         User currentUser = getCurrentUser();
@@ -122,5 +158,4 @@ public class ProfileController {
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
     }
-
 }
