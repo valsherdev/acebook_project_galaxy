@@ -268,18 +268,27 @@
 }
 
 .friend-pending {
+    /*display: inline-flex;*/
+    /*align-items: center;*/
+    /*padding: 4px 10px;*/
+    /*background: #eef2ff;*/
+    /*color: #4f46e5;*/
+    /*border-radius: 20px;*/
+    /*font-size: 12px;*/
+    /*font-weight: 600;*/
+    cursor: pointer;
+    list-style: none;
     display: inline-flex;
     align-items: center;
-
-    padding: 4px 10px;
-
-    background: #eef2ff;
-    color: #4f46e5;
-
-    border-radius: 20px;
-
-    font-size: 12px;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 13px;
     font-weight: 600;
+    color: #4f46e5;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
 }
 
 .friend-simple {
@@ -430,4 +439,49 @@
 
 a {
     text-decoration: none;
+}
+
+.notification-row {
+    text-decoration: none;
+    color: inherit;
+}
+
+.notification-row.unread {
+    background-color: #eef2ff;
+    border-color: #c7d2fe;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.no-notifications {
+    display: flex;
+    justify-content: center;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.notification-row.unread {
+    background-color: #eef2ff;
+    border-color: #c7d2fe;
+}
+
+.add-friend-btn {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f46e5;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
 }
