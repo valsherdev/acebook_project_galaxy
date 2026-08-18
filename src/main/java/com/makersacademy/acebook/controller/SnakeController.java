@@ -89,7 +89,7 @@ public class SnakeController {
                 .stream()
                 .map(score ->
                         new ScoreResponse(
-                                score.getName(),
+                                score.getUsername(),
                                 score.getScore()
                         )
                 )
