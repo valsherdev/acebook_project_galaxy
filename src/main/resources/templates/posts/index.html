@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org"
-          xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-          layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="~{layout}">
     <head lang="en">
         <meta charset="UTF-8"/>
         <title>Acebook</title>
@@ -16,10 +16,13 @@
 
         <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post" enctype="multipart/form-data">
 
-            <img class="profile-pic-placeholder"
-                 th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
-                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
-                 alt="Profile Picture" />
+            <a th:if="${post.user != null}"
+               th:href="@{'/profile/' + ${post.user.id}}">
+                <img class="profile-pic-placeholder"
+                     th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
+                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                     alt="Profile Picture" />
+            </a>
 
             <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
 
@@ -59,11 +62,13 @@
             </form>
         </details>
 
+        <a th:if="${post.user != null}"
+           th:href="@{'/profile/' + ${post.user.id}}">
         <img class="profile-pic-placeholder"
              th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
              alt="Profile Picture" />
-
+        </a>
         <p>
             Posted by
             <a th:if="${post.user != null}"
