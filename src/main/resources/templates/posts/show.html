@@ -31,6 +31,19 @@
     </div>
 </div>
 
+<div class="like-reload" th:id="${'post-' + post.id}">
+    <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
+        <button type="submit">❤️</button>
+        <span th:text="${post.likes.size()} + ' likes'"></span>
+        <span th:if="${post.likes.size()} !=0">
+                    | Liked by:
+                    <th:block th:each="like, likeStat : ${post.likes}">
+                        <span th:text="${like.user.getName() + (!likeStat.last ? ', ' : '')}"></span>
+                    </th:block>
+                </span>
+    </form>
+</div>
+
 <h4>Comments</h4>
 <div th:each="comment : ${post.comments}">
     <a th:if="${comment.user != null}"
