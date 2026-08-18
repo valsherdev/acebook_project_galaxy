@@ -58,7 +58,7 @@
             <form th:if="${post.user != null and post.user.id == currentUserId}"
                   th:action="@{'/posts/' + ${post.id} + '/delete'}"
                   method="post">
-                <button type="submit">Delete</button>
+                <button type="submit" class="delete-btn">Delete</button>
             </form>
         </details>
             <div class="post-author-container">

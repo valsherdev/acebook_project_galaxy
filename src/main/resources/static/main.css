@@ -668,3 +668,16 @@ a.back-link {
 .view-comments span {
     font-weight: 600;
 }
+
+.delete-btn {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: 1px solid #fca5a5;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+}
