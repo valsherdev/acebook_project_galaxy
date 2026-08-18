@@ -16,10 +16,10 @@
 
         <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post" enctype="multipart/form-data">
 
-            <a th:if="${post.user != null}"
-               th:href="@{'/profile/' + ${post.user.id}}">
+            <a th:if="${profile != null and profile.user != null}"
+               th:href="@{'/profile/' + ${profile.user.id}}">
                 <img class="profile-pic-placeholder"
-                     th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
+                     th:src="${profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
                      alt="Profile Picture" />
             </a>
