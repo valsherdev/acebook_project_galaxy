@@ -1,65 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8"/>
     <title>Post</title>
     <link rel="stylesheet" href="/main.css" />
 </head>
 <body>
+<div layout:fragment="content">
 
-<a th:href="@{/posts}">&larr; Back to feed</a>
-<p>
-    Posted by
-    <a th:if="${post.user != null}"
-       th:href="@{'/profile/' + ${post.user.id}}"
-       th:text="${post.user.name}">
-        Name
-    </a>
-    <strong th:if="${post.user == null}">Guest</strong>:
-    <span th:text="${post.content}"></span>
-    <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
-</p>
+    <div class="post-box">
+        <a th:href="@{/posts}">&larr; Back to feed</a>
+        <p>
+            Posted by
+            <a th:if="${post.user != null}"
+               th:href="@{'/profile/' + ${post.user.id}}"
+               th:text="${post.user.name}">
+                Name
+            </a>
+            <strong th:if="${post.user == null}">Guest</strong>:
+            <span th:text="${post.content}"></span>
+            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+        </p>
 
-<div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
-     th:if="${post.images != null and !post.images.isEmpty()}">
-    <div th:each="image, position : ${post.convertedImages}">
-        <input type="checkbox" th:id="${'img-toggle-' + post.id + '-' + position.index}" class="expand-image" />
+        <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
+             th:if="${post.images != null and !post.images.isEmpty()}">
+            <div th:each="image, position : ${post.convertedImages}">
+                <input type="checkbox" th:id="${'img-toggle-' + post.id + '-' + position.index}" class="expand-image" />
 
-        <label th:for="${'img-toggle-' + post.id + '-' + position.index}" class="image-card">
-            <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
-        </label>
+                <label th:for="${'img-toggle-' + post.id + '-' + position.index}" class="image-card">
+                    <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+                </label>
+            </div>
+        </div>
+
+        <div class="like-reload" th:id="${'post-' + post.id}">
+            <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
+                <button type="submit">❤️</button>
+                <span th:text="${post.likes.size()} + ' likes'"></span>
+                <span th:if="${post.likes.size()} != 0">
+                        | Liked by:
+                        <th:block th:each="like, likeStat : ${post.likes}" th:if="${likeStat.index < 2}">
+                            <a th:href="@{'/profile/' + ${like.user.id}}" th:text="${like.user.getName()}"></a>
+                            <span th:if="${likeStat.index == 0 and post.likes.size() == 2}"> and </span>
+                            <span th:if="${likeStat.index == 0 and post.likes.size() > 2}">, </span>
+                            <span th:if="${likeStat.index == 1 and post.likes.size() > 2}"> and </span>
+                        </th:block>
+                        <details class="likes-dropdown" th:if="${post.likes.size() > 2}">
+                            <summary class="likes-summary" th:text="${(post.likes.size() - 2) + ' other(s)'}"></summary>
+                            <ul class="likes-list">
+                                <li th:each="like, likeStat : ${post.likes}" th:if="${likeStat.index >= 2}">
+                                    <a th:href="@{'/profile/' + ${like.user.id}}" th:text="${like.user.getName()}"></a>
+                                </li>
+                            </ul>
+                        </details>
+                </span>
+            </form>
+        </div>
+
+        <h4>Comments</h4>
+        <div th:each="comment : ${post.comments}">
+            <a th:if="${comment.user != null}"
+               th:href="@{'/profile/' + ${comment.user.id}}"
+               th:text="${comment.user.name}">
+                Name
+            </a>
+            <strong th:if="${comment.user == null}">Guest</strong>
+            <span th:text="': ' + ${comment.content}"></span>
+            <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
+        </div>
+
+        <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
+            <input type="text" name="content" placeholder="Write a comment..." required/>
+            <button type="submit">Comment</button>
+        </form>
     </div>
 </div>
-
-<div class="like-reload" th:id="${'post-' + post.id}">
-    <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
-        <button type="submit">❤️</button>
-        <span th:text="${post.likes.size()} + ' likes'"></span>
-        <span th:if="${post.likes.size()} !=0">
-                    | Liked by:
-                    <th:block th:each="like, likeStat : ${post.likes}">
-                        <span th:text="${like.user.getName() + (!likeStat.last ? ', ' : '')}"></span>
-                    </th:block>
-                </span>
-    </form>
-</div>
-
-<h4>Comments</h4>
-<div th:each="comment : ${post.comments}">
-    <a th:if="${comment.user != null}"
-       th:href="@{'/profile/' + ${comment.user.id}}"
-       th:text="${comment.user.name}">
-        Name
-    </a>
-    <strong th:if="${comment.user == null}">Guest</strong>
-    <span th:text="': ' + ${comment.content}"></span>
-    <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
-</div>
-
-<form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
-    <input type="text" name="content" placeholder="Write a comment..." required/>
-    <button type="submit">Comment</button>
-</form>
-
 </body>
 </html>

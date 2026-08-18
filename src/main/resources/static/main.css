@@ -411,3 +411,22 @@
 .like-reload {
     scroll-margin-top: 450px;
 }
+
+.likes-dropdown {
+    display:inline;
+}
+
+.likes-summary {
+    display:inline;
+    cursor:pointer;
+    color: #564ac6;
+    font-weight: 500;
+}
+.likes-list {
+    margin: 0;
+    padding-left: 20px;"
+}
+
+a {
+    text-decoration: none;
+}
