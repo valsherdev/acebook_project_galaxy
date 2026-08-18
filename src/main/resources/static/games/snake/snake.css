@@ -46,6 +46,8 @@ body {
     text-decoration: none;
 
     font-weight: 600;
+
+    font-size: 18px;
 }
 
 .stats {
@@ -53,7 +55,7 @@ body {
 
     gap: 14px;
 
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .game-card,
@@ -71,7 +73,7 @@ body {
 .canvas-wrap {
     position: relative;
 
-    width: min(400px, 100%);
+    width: min(600px, 100%);
 
     margin: 0 auto;
 }
@@ -173,7 +175,7 @@ canvas {
 
     color: #6b7280;
 
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .leaderboard-card {
@@ -182,6 +184,8 @@ canvas {
 
 .leaderboard-card h2 {
     margin-top: 0;
+
+    font-size: 22px;
 }
 
 #leaderboard {
@@ -194,6 +198,8 @@ canvas {
     padding: 7px 0;
 
     border-bottom: 1px solid #eee;
+
+    font-size: 16px;
 }
 
 @media (max-width: 600px) {

@@ -13,6 +13,7 @@ import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.model.Profile;
 import com.makersacademy.acebook.repository.*;
 import com.makersacademy.acebook.repository.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -53,7 +54,7 @@ public class PostsController {
     ProfileRepository profileRepository;
 
     @GetMapping("/posts")
-    public String index(Model model) {
+    public String index(@RequestParam(name = "filter", defaultValue = "all") String filter, Model model) {
         User currentUser = getCurrentUser();
 
         model.addAttribute("currentUserId", currentUser.getId());
@@ -69,8 +70,19 @@ public class PostsController {
         for (Friendship friendship : outgoingPending) pendingIds.add(friendship.getFriend().getId());
         model.addAttribute("currentUserPendingIds", pendingIds);
 
-        Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
+        Iterable<Post> allPosts = repository.findAllByOrderByCreatedAtDesc();
+
+        List<Post> posts = new ArrayList<>();
+        for (Post post : allPosts) {
+            boolean isFriendsPost = post.getUser() != null && friendIds.contains(post.getUser().getId());
+            if ("friends".equals(filter)) {
+                if (isFriendsPost) posts.add(post);
+            } else {
+                posts.add(post);
+            }
+        }
         model.addAttribute("posts", posts);
+        model.addAttribute("currentFilter", filter);
         model.addAttribute("post", new Post());
 
         Map<Long, List<Comment>> recentCommentsByPost = new HashMap<>();
@@ -120,7 +132,7 @@ public class PostsController {
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public RedirectView createComment(@PathVariable Long postId, @RequestParam String content) {
+    public RedirectView createComment(@PathVariable Long postId, @RequestParam String content, HttpServletRequest request) {
         Post post = repository.findById(postId).orElseThrow();
         User currentUser = getCurrentUser();
         commentRepository.save(new Comment(content, post, currentUser));
@@ -131,8 +143,12 @@ public class PostsController {
                     currentUser.getName() + " commented on your post",
                     "/posts/" + post.getId()
             ));
+
+
         }
-        return new RedirectView("/posts");
+        String currentUrl = request.getHeader("Referer");
+        String baseUrl = (currentUrl != null && !currentUrl.isEmpty()) ? currentUrl : "/posts";
+        return new RedirectView(baseUrl + "#post-" + postId);
     }
 
     @GetMapping("/posts/{id}")
@@ -153,7 +169,7 @@ public class PostsController {
     }
 
     @PostMapping("/posts/{postId}/likes")
-    public RedirectView toggleLike(@PathVariable Long postId) {
+    public RedirectView toggleLike(@PathVariable Long postId, HttpServletRequest request) {
         Post post = repository.findById(postId).orElseThrow();
         User currentUser = getCurrentUser();
         Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, currentUser.getId());
@@ -170,7 +186,9 @@ public class PostsController {
                 ));
             }
         }
-        return new RedirectView("/posts");
+        String currentUrl = request.getHeader("Referer");
+        String baseUrl = (currentUrl != null && !currentUrl.isEmpty()) ? currentUrl : "/posts";
+        return new RedirectView(baseUrl + "#post-" + postId);
     }
 
     private User getCurrentUser() {

@@ -40,7 +40,7 @@
     </div>
 
     <ul>
-        <li class="post-box" th:each="post : ${posts}">
+        <li class="post-box" th:id="${'post-' + post.id}" th:each="post : ${posts}">
 
             <details class="post-menu">
                 <summary class="dots-button">⋮</summary>
@@ -63,10 +63,39 @@
                 <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
             </p>
 
-            <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
-                <button type="submit">❤️</button>
-                <span th:text="${post.likes.size()} + ' likes'"></span>
-            </form>
+            <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
+                 th:if="${post.images != null and !post.images.isEmpty()}">
+                <div th:each="image, position : ${post.convertedImages}">
+                    <input type="checkbox" th:id="${'image-toggle-' + post.id + '-' + position.index}" class="expand-image" />
+                    <label th:for="${'image-toggle-' + post.id + '-' + position.index}" class="image-card">
+                        <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+                    </label>
+                </div>
+            </div>
+
+            <div class="like-reload" th:id="${'post-' + post.id}">
+                <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
+                    <button type="submit">❤️</button>
+                    <span th:text="${post.likes.size()} + ' likes'"></span>
+                    <span th:if="${post.likes.size()} != 0">
+                        | Liked by:
+                        <th:block th:each="like, likeStat : ${post.likes}" th:if="${likeStat.index < 2}">
+                            <a th:href="@{'/profile/' + ${like.user.id}}" th:text="${like.user.getName()}"></a>
+                            <span th:if="${likeStat.index == 0 and post.likes.size() == 2}"> and </span>
+                            <span th:if="${likeStat.index == 0 and post.likes.size() > 2}">, </span>
+                            <span th:if="${likeStat.index == 1 and post.likes.size() > 2}"> and </span>
+                        </th:block>
+                        <details class="likes-dropdown" th:if="${post.likes.size() > 2}">
+                            <summary class="likes-summary" th:text="${(post.likes.size() - 2) + ' other(s)'}"></summary>
+                            <ul class="likes-list">
+                                <li th:each="like, likeStat : ${post.likes}" th:if="${likeStat.index >= 2}">
+                                    <a th:href="@{'/profile/' + ${like.user.id}}" th:text="${like.user.getName()}"></a>
+                                </li>
+                            </ul>
+                        </details>
+                </span>
+                </form>
+            </div>
 
             <div>
                 <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
