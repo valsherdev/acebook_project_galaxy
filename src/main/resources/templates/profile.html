@@ -63,6 +63,16 @@
                 <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
             </p>
 
+            <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
+                 th:if="${post.images != null and !post.images.isEmpty()}">
+                <div th:each="image, position : ${post.convertedImages}">
+                    <input type="checkbox" th:id="${'image-toggle-' + post.id + '-' + position.index}" class="expand-image" />
+                    <label th:for="${'image-toggle-' + post.id + '-' + position.index}" class="image-card">
+                        <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+                    </label>
+                </div>
+            </div>
+
             <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
                 <button type="submit">❤️</button>
                 <span th:text="${post.likes.size()} + ' likes'"></span>
