@@ -23,14 +23,14 @@ const startButton =
 const leaderboard =
     document.getElementById("leaderboard");
 
-const GRID_SIZE = 20;
+const GRID_SIZE = 30;
 
 const CELL_SIZE =
     canvas.width / GRID_SIZE;
 
-const START_SPEED = 140;
+const START_SPEED = 160;
 
-const MIN_SPEED = 65;
+const MIN_SPEED = 70;
 
 let snake;
 
@@ -97,7 +97,7 @@ function scheduleNextTick() {
     const speed =
         Math.max(
             MIN_SPEED,
-            START_SPEED - score * 3
+            START_SPEED - score * 2
         );
 
     gameTimer =
