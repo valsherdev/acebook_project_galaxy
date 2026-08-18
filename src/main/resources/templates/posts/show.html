@@ -14,7 +14,6 @@
     <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
 </p>
 
-<!--     if only 1 image uploaded then will follow css class image-grid single-image otherwise if more than 1 image then will follow css clas image-grid -->
 <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
      th:if="${post.images != null and !post.images.isEmpty()}">
     <div th:each="image, position : ${post.convertedImages}">
