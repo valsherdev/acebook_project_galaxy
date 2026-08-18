@@ -21,9 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class PostsController {
@@ -69,6 +67,14 @@ public class PostsController {
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());
+
+        Map<Long, List<Comment>> recentCommentsByPost = new HashMap<>();
+        for (Post post : posts) {
+            List<Comment> recent = commentRepository.findTop3ByPostIdOrderByCreatedAtDesc(post.getId());
+            Collections.reverse(recent);
+            recentCommentsByPost.put(post.getId(), recent);
+        }
+        model.addAttribute("recentCommentsByPost", recentCommentsByPost);
         return "posts/index";
     }
 
