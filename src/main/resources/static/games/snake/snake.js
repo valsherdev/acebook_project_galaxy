@@ -28,7 +28,7 @@ const GRID_SIZE = 30;
 const CELL_SIZE =
     canvas.width / GRID_SIZE;
 
-const START_SPEED = 160;
+const START_SPEED = 150;
 
 const MIN_SPEED = 70;
 
