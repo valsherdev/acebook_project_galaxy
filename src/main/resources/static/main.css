@@ -353,6 +353,7 @@
     height: 200px;
     object-fit: cover;
     display: block;
+    margin-bottom: 15px;
 }
 
 .grid-image:hover {
@@ -484,4 +485,41 @@ a {
     border: 1px solid #c7d2fe;
     border-radius: 6px;
     transition: background-color 0.2s ease;
+}
+
+.post-author-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.post-author-text {
+    margin: 0;
+    font-weight: 500;
+}
+
+.post-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-timestamp {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.post-friend-action {
+    margin-left: auto;
+}
+
+.pending-label {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
