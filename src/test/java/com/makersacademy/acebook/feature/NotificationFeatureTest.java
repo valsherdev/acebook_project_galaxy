@@ -72,7 +72,7 @@ public class NotificationFeatureTest {
 
     private Long insertPost(Long authorId, String content) {
         jdbcTemplate.update(
-                "INSERT INTO posts (user_id, content, image, created_at) VALUES (?, ?, NULL, NOW())",
+                "INSERT INTO posts (user_id, content, images, created_at) VALUES (?, ?, NULL, NOW())",
                 authorId, content);
         return jdbcTemplate.queryForObject(
                 "SELECT id FROM posts WHERE user_id = ? AND content = ?",
