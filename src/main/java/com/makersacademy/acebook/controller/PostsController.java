@@ -19,8 +19,11 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -69,14 +72,47 @@ public class PostsController {
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());
+
+        Map<Long, List<Comment>> recentCommentsByPost = new HashMap<>();
+        for (Post post : posts) {
+            List<Comment> recent = commentRepository.findTop3ByPostIdOrderByCreatedAtDesc(post.getId());
+            Collections.reverse(recent);
+            recentCommentsByPost.put(post.getId(), recent);
+        }
+        model.addAttribute("recentCommentsByPost", recentCommentsByPost);
         return "posts/index";
     }
 
     @PostMapping("/posts")
-    public RedirectView create(@ModelAttribute Post post) {
-        if (post.getContent() == null || post.getContent().isBlank()) {
+    public RedirectView create(@ModelAttribute Post post,
+                               @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws IOException {
+
+        boolean hasContent = post.getContent() != null && !post.getContent().isBlank();
+        boolean hasImage = false;
+
+        if (imageFiles != null) {
+            for (MultipartFile file : imageFiles) {
+                if (file != null && !file.isEmpty()) {
+                    hasImage = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasContent && !hasImage) {
             return new RedirectView("/posts");
         }
+
+        if (hasImage) {
+            List<String> encodedImages = new ArrayList<>();
+            for (MultipartFile file : imageFiles) {
+                if (!file.isEmpty()) {
+                    encodedImages.add(java.util.Base64.getEncoder().encodeToString(file.getBytes()));
+                }
+            }
+            post.setImages(String.join(",", encodedImages));
+        }
+
         User currentUser = getCurrentUser();
         post.setUser(currentUser);
         repository.save(post);
@@ -92,7 +128,7 @@ public class PostsController {
         if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
             notificationRepository.save(new Notification(
                     post.getUser(),
-                    currentUser.getUsername() + " commented on your post",
+                    currentUser.getName() + " commented on your post",
                     "/posts/" + post.getId()
             ));
         }
@@ -125,14 +161,14 @@ public class PostsController {
             likeRepository.delete(existingLike.get());
         } else {
             likeRepository.save(new Like(post, currentUser));
-        }
 
-        if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
-            notificationRepository.save(new Notification(
-                    post.getUser(),
-                    currentUser.getUsername() + " liked your post",
-                    "/posts/" + post.getId()
-            ));
+            if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
+                notificationRepository.save(new Notification(
+                        post.getUser(),
+                        currentUser.getName() + " liked your post",
+                        "/posts/" + post.getId()
+                ));
+            }
         }
         return new RedirectView("/posts");
     }

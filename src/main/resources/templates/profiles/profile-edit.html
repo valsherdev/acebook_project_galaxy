@@ -13,7 +13,7 @@
     <h2>Edit profile</h2>
 
     <form th:action="@{/profile/edit}" th:object="${profile}" method="post" enctype="multipart/form-data">
-        Profile picture: <input type="file" name="imageFile" />
+        Profile picture: <input type="file" name="imageFile" /><br/>
         First name: <input type="text" th:field="*{firstName}" /><br/>
         Last name: <input type="text" th:field="*{lastName}" /><br/>
         Current location: <input type="text" th:field="*{currentLocation}" /><br/>

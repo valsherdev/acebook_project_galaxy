@@ -32,4 +32,15 @@ public class User {
         this.username = username;
         this.enabled = enabled;
     }
+
+    public String getName() {
+        if (profile != null
+                && profile.getFirstName() != null
+                && !profile.getFirstName().isBlank()
+                && profile.getLastName() != null
+                && !profile.getLastName().isBlank()) {
+            return profile.getFirstName() + " " + profile.getLastName();
+        }
+        return username;
+    }
 }

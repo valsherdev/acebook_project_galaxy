@@ -9,18 +9,42 @@
 
 <a th:href="@{/posts}">&larr; Back to feed</a>
 <p>
-    Posted by <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+    Posted by
+    <a th:if="${post.user != null}"
+       th:href="@{'/profile/' + ${post.user.id}}"
+       th:text="${post.user.name}">
+        Name
+    </a>
+    <strong th:if="${post.user == null}">Guest</strong>:
     <span th:text="${post.content}"></span>
     <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
 </p>
+
+<div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
+     th:if="${post.images != null and !post.images.isEmpty()}">
+    <div th:each="image, position : ${post.convertedImages}">
+        <input type="checkbox" th:id="${'img-toggle-' + post.id + '-' + position.index}" class="expand-image" />
+
+        <label th:for="${'img-toggle-' + post.id + '-' + position.index}" class="image-card">
+            <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+        </label>
+    </div>
+</div>
+
 <h4>Comments</h4>
 <div th:each="comment : ${post.comments}">
-    <span th:text="${comment.user.username} + ': ' + ${comment.content}"></span>
+    <a th:if="${comment.user != null}"
+       th:href="@{'/profile/' + ${comment.user.id}}"
+       th:text="${comment.user.name}">
+        Name
+    </a>
+    <strong th:if="${comment.user == null}">Guest</strong>
+    <span th:text="': ' + ${comment.content}"></span>
     <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
 </div>
 
 <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
-    <input type="text" name="content" placeholder="Write a comment..." />
+    <input type="text" name="content" placeholder="Write a comment..." required/>
     <button type="submit">Comment</button>
 </form>
 

@@ -14,17 +14,23 @@
 
         <h1>Posts Feed</h1>
 
-        <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post">
+        <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post" enctype="multipart/form-data">
 
             <img class="profile-pic-placeholder"
                  th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
                  alt="Profile Picture" />
 
-                <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
+            <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
+
+            <label class="image-upload-icon">
+                <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />
+                <input type="file" name="imageFiles" multiple />
+            </label>
+
             <div class="post-form-actions">
-                <input type="submit" value="Submit" />
-                <input type="reset" value="Reset" />
+                    <input type="submit" value="Submit" />
+                    <input type="reset" value="Reset" />
             </div>
         </form>
 
@@ -50,22 +56,28 @@
 
         <p>
             Posted by
-            <a th:if="${hasFirstName} and ${hasLastName}"
+            <a th:if="${post.user != null}"
                th:href="@{'/profile/' + ${post.user.id}}"
-               th:text="${post.user.profile.firstName} + ' ' + ${post.user.profile.lastName}">First and Last name
+               th:text="${post.user.name}">
+                Name
             </a>
-
-            <a th:unless="${hasFirstName} and ${hasLastName}"
-                    th:href="@{'/profile/' + ${post.user.id}}"
-                    th:text="${post.user.username}">Email
-            </a>
-
-            <strong th:if="${post.user == null}">Guest</strong>
+            <strong th:if="${post.user == null}">Guest</strong>:
 
         </p>
 
             <p th:text="${post.content}"></p>
             <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+
+<!--     if only 1 image uploaded then will follow css class image-grid single-image otherwise if more than 1 image then will follow css clas image-grid -->
+        <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
+             th:if="${post.images != null and !post.images.isEmpty()}">
+            <div th:each="image, position : ${post.convertedImages}">
+                <input type="checkbox" th:id="${'image-toggle-' + post.id + '-' + position.index}" class="expand-image" />
+                <label th:for="${'image-toggle-' + post.id + '-' + position.index}" class="image-card">
+                    <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+                </label>
+            </div>
+        </div>
 
 
         <div th:if="${post.user != null and post.user.id != currentUserId}">
@@ -87,7 +99,7 @@
         <div>
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
 
-            <div th:each="comment, commentStat : ${post.comments}" th:if="${commentStat.index < 3}"
+            <div th:each="comment : ${recentCommentsByPost.get(post.id)}"
                  th:with="cProfile=${comment.user?.profile}, hasBothNames=${cProfile != null and !#strings.isEmpty(cProfile.firstName) and !#strings.isEmpty(cProfile.lastName)}">
                 <span th:text="${hasBothNames ? cProfile.firstName + ' ' + cProfile.lastName + ': ' + comment.content
                       : comment.user.username + ': ' + comment.content}"
@@ -100,7 +112,7 @@
             </p>
 
             <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
-                <input type="text" name="content" placeholder="Leave a comment..." />
+                <input type="text" name="content" placeholder="Leave a comment..." required/>
                 <button type="submit">Comment</button>
             </form>
         </div>

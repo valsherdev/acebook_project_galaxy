@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,28 +25,34 @@ public class Post {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "post")
+    @OrderBy("createdAt ASC")
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post")
     private List<Like> likes;
 
-    private byte[] image;
+    @Column(columnDefinition = "LONGTEXT")
+    private String images;
 
-    public String convertImageByteToString() {
-        if (this.image == null) {
-            return null;
-        }
-        return java.util.Base64.getEncoder().encodeToString(this.image);
+    public List<String> getConvertedImages() {
+        List<String> convertedImages = new ArrayList<>();
+        if (this.images != null && !this.images.isBlank()) {
+            for (String image : this.images.split(",")) {
+                if (!image.isBlank()) {
+                    convertedImages.add(image);
+                }
+            }
+        } return convertedImages;
     }
 
     public Post() {}
 
-    public Post(String content, User user, byte[] image) {
+    public Post(String content, User user, String images) {
 
         this.content = content;
         this.user = user;
         this.createdAt = LocalDateTime.now();
-        this.image = image;
+        this.images = images;
     }
 
 }

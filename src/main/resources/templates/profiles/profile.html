@@ -13,21 +13,9 @@
 <body>
 <div layout:fragment="content">
     <h2>
-    <span th:if="${profile.firstName != null and !profile.firstName.isBlank()}"
-          th:text="${profile.firstName}">
-    </span>
-
-        <span th:if="${profile.lastName != null and !profile.lastName.isBlank()}"
-              th:text="${(profile.firstName != null and !profile.firstName.isBlank()) ? ' ' + profile.lastName : profile.lastName}">
-    </span>
-
-        <span th:if="${(profile.firstName == null or profile.firstName.isBlank())
-                  and (profile.lastName == null or profile.lastName.isBlank())}"
-              th:text="${profile.user.username}">
-    </span>
-
-        <span>'s Profile</span>
+        <span th:text="${profile.user.name}">Name</span>'s Profile
     </h2>
+
     <p><strong>Profile Picture:</strong></p>
     <img class="profile-pic-placeholder"
          th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
@@ -65,7 +53,12 @@
 
             <p>
                 Posted by
-                <span th:text="${post.user != null ? post.user.username : 'Unknown'}"></span>:
+                <a th:if="${post.user != null}"
+                   th:href="@{'/profile/' + ${post.user.id}}"
+                   th:text="${post.user.name}">
+                    Name
+                </a>
+                <strong th:if="${post.user == null}">Guest</strong>
                 <span th:text="${post.content}"></span>
                 <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
             </p>
@@ -77,10 +70,15 @@
 
             <div>
                 <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
-
                 <div th:each="comment, commentStat : ${post.comments}"
                      th:if="${commentStat.index < 3}">
-                    <span th:text="${comment.user.username} + ': ' + ${comment.content}"></span>
+                    <a th:if="${comment.user != null}"
+                       th:href="@{'/profile/' + ${comment.user.id}}"
+                       th:text="${comment.user.name}">
+                        Name
+                    </a>
+                    <strong th:if="${comment.user == null}">Guest</strong>
+                    <span th:text="': ' + ${comment.content}"></span>
                     <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
                 </div>
 
@@ -96,7 +94,7 @@
                       method="post">
                     <input type="text"
                            name="content"
-                           placeholder="Leave a comment..." />
+                           placeholder="Leave a comment..." required/>
                     <button type="submit">Comment</button>
                 </form>
             </div>

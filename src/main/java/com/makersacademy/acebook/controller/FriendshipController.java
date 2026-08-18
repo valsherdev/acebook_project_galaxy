@@ -78,7 +78,7 @@ public class FriendshipController {
 
                 notificationRepository.save(new Notification(
                         friendUser,
-                        currentUser.getUsername() + " sent you a friend request",
+                        currentUser.getName() + " sent you a friend request",
                         "/friends"
                 ));
                 }
