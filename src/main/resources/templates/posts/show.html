@@ -85,7 +85,7 @@
             <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
         </div>
 
-        <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
+        <form class="comment-form" th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
             <input type="text" name="content" placeholder="Write a comment..." required/>
             <button type="submit">Comment</button>
         </form>

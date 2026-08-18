@@ -96,11 +96,6 @@
                 <p th:text="${post.content}"></p>
 
 
-
-
-<!--            <p th:text="${post.content}"></p>-->
-<!--            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>-->
-
 <!--     if only 1 image uploaded then will follow css class image-grid single-image otherwise if more than 1 image then will follow css clas image-grid -->
         <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
              th:if="${post.images != null and !post.images.isEmpty()}">
@@ -147,11 +142,11 @@
 
                 <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
             </div>
-            <p th:if="${post.comments.size() > 3}">
+            <p class="view-comments"  th:if="${post.comments.size() > 3}">
                 <a th:href="@{'/posts/' + ${post.id}}">View all <span th:text="${post.comments.size()}"></span> comments</a>
             </p>
 
-            <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
+            <form class="comment-form" th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
                 <input type="text" name="content" placeholder="Leave a comment..." required/>
                 <button type="submit">Comment</button>
             </form>

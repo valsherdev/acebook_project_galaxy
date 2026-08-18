@@ -125,7 +125,7 @@
                     <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
                 </div>
 
-                <p th:if="${post.comments.size() > 3}">
+                <p class="view-comments" th:if="${post.comments.size() > 3}">
                     <a th:href="@{'/posts/' + ${post.id}}">
                         View all
                         <span th:text="${post.comments.size()}"></span>
@@ -133,7 +133,7 @@
                     </a>
                 </p>
 
-                <form th:action="@{'/posts/' + ${post.id} + '/comments'}"
+                <form class="comment-form" th:action="@{'/posts/' + ${post.id} + '/comments'}"
                       method="post">
                     <input type="text"
                            name="content"

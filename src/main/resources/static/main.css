@@ -589,3 +589,51 @@ a.back-link {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
 }
+
+.comment-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.comment-form input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+}
+
+.comment-form button {
+    padding: 8px 16px;
+    background-color: #4f45e2;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #3d33c6;
+}
+
+.view-comments {
+    margin: 8px 0;
+}
+
+.view-comments a {
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    gap: 4px;
+}
+
+.view-comments a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.view-comments span {
+    font-weight: 600;
+}
