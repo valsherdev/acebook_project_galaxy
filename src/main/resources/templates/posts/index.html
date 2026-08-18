@@ -106,10 +106,29 @@
             <span class="pending-label" th:if="${currentUserPendingIds.contains(post.user.id)}">Request sent</span>
         </div>
 
-        <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
-            <button type="submit">❤️</button>
-            <span th:text="${post.likes.size()} + ' likes'"></span>
-        </form>
+        <div class="like-reload" th:id="${'post-' + post.id}">
+            <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
+                <button type="submit">❤️</button>
+                <span th:text="${post.likes.size()} + ' likes'"></span>
+                    <span th:if="${post.likes.size()} != 0">
+                        | Liked by:
+                        <th:block th:each="like, likeStat : ${post.likes}" th:if="${likeStat.index < 2}">
+                            <a th:href="@{'/profile/' + ${like.user.id}}" th:text="${like.user.getName()}"></a>
+                            <span th:if="${likeStat.index == 0 and post.likes.size() == 2}"> and </span>
+                            <span th:if="${likeStat.index == 0 and post.likes.size() > 2}">, </span>
+                            <span th:if="${likeStat.index == 1 and post.likes.size() > 2}"> and </span>
+                        </th:block>
+                        <details class="likes-dropdown" th:if="${post.likes.size() > 2}">
+                            <summary class="likes-summary" th:text="${(post.likes.size() - 2) + ' other(s)'}"></summary>
+                            <ul class="likes-list">
+                                <li th:each="like, likeStat : ${post.likes}" th:if="${likeStat.index >= 2}">
+                                    <a th:href="@{'/profile/' + ${like.user.id}}" th:text="${like.user.getName()}"></a>
+                                </li>
+                            </ul>
+                        </details>
+                </span>
+            </form>
+        </div>
 
         <div>
             <h4 th:text="'Comments (' + ${post.comments.size()} + ')'"></h4>
