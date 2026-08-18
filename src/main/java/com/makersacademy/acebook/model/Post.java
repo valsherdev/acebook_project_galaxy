@@ -24,6 +24,7 @@ public class Post {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "post")
+    @OrderBy("createdAt ASC")
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post")
