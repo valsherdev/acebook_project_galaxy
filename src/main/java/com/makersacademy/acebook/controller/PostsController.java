@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,14 @@ public class PostsController {
         Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
         model.addAttribute("posts", posts);
         model.addAttribute("post", new Post());
+
+        Map<Long, List<Comment>> recentCommentsByPost = new HashMap<>();
+        for (Post post : posts) {
+            List<Comment> recent = commentRepository.findTop3ByPostIdOrderByCreatedAtDesc(post.getId());
+            Collections.reverse(recent);
+            recentCommentsByPost.put(post.getId(), recent);
+        }
+        model.addAttribute("recentCommentsByPost", recentCommentsByPost);
         return "posts/index";
     }
 
@@ -152,14 +161,14 @@ public class PostsController {
             likeRepository.delete(existingLike.get());
         } else {
             likeRepository.save(new Like(post, currentUser));
-        }
 
-        if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
-            notificationRepository.save(new Notification(
-                    post.getUser(),
-                    currentUser.getUsername() + " liked your post",
-                    "/posts/" + post.getId()
-            ));
+            if (post.getUser() != null && !post.getUser().getId().equals(currentUser.getId())) {
+                notificationRepository.save(new Notification(
+                        post.getUser(),
+                        currentUser.getUsername() + " liked your post",
+                        "/posts/" + post.getId()
+                ));
+            }
         }
         return new RedirectView("/posts");
     }
