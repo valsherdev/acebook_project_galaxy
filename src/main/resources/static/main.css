@@ -92,6 +92,7 @@
 
 .post-box {
     position: relative;
+    scroll-margin-top: 450px;
 }
 
 .post-menu {
