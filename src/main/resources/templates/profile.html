@@ -12,26 +12,29 @@
 
 <body>
 <div layout:fragment="content">
-    <h2>
-        <span th:text="${profile.user.name}">Name</span>'s Profile
-    </h2>
 
-    <p><strong>Profile Picture:</strong></p>
-    <img class="profile-pic-placeholder"
-         th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
+    <div class="profile-header">
+        <img class="profile-pic-placeholder"
+             th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
-         alt="Profile Picture"/>
+             alt="Profile Picture"/>
 
-    <p><strong>First name:</strong> <span th:text="${profile.firstName}">First</span></p>
-    <p><strong>Last name:</strong> <span th:text="${profile.lastName}">Last</span></p>
-    <p><strong>Current location:</strong> <span th:text="${profile.currentLocation}">Location</span></p>
-    <p><strong>Hometown:</strong> <span th:text="${profile.hometown}">Hometown</span></p>
-    <p><strong>About me:</strong> <span th:text="${profile.aboutMe}">About</span></p>
+        <h2>
+            <span th:text="${profile.user.name}">Name</span>'s Profile
+        </h2>
+    </div>
+    <div class="profile-details">
+        <p><strong>First name:</strong> <span th:text="${profile.firstName}">First</span></p>
+        <p><strong>Last name:</strong> <span th:text="${profile.lastName}">Last</span></p>
+        <p><strong>Current location:</strong> <span th:text="${profile.currentLocation}">Location</span></p>
+        <p><strong>Hometown:</strong> <span th:text="${profile.hometown}">Hometown</span></p>
+        <p><strong>About me:</strong> <span th:text="${profile.aboutMe}">About</span></p>
 
-    <a th:if="${profile.user.id == currentUser.id}"
-       th:href="@{/profile/edit}">
-        Edit Profile
-    </a>
+        <a th:if="${profile.user.id == currentUser.id}"
+           th:href="@{/profile/edit}">
+            Edit Profile
+        </a>
+    </div>
 
     <h2>Activity</h2>
 
@@ -51,17 +54,28 @@
                 </form>
             </details>
 
-            <p>
-                Posted by
+            <div class="post-author-container">
                 <a th:if="${post.user != null}"
-                   th:href="@{'/profile/' + ${post.user.id}}"
-                   th:text="${post.user.name}">
-                    Name
+                   th:href="@{'/profile/' + ${post.user.id}}">
+                    <img class="profile-pic-placeholder"
+                         th:src="${post.user != null and post.user.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${post.user.profile.convertImageByteToString()} :
+                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                         alt="Profile Picture" />
                 </a>
-                <strong th:if="${post.user == null}">Guest</strong>
-                <span th:text="${post.content}"></span>
-                <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
-            </p>
+                <div class="post-meta">
+                    <p class="post-author-text">
+                        Posted by
+                        <a th:if="${post.user != null}"
+                           th:href="@{'/profile/' + ${post.user.id}}"
+                           th:text="${post.user.name}">
+                            Name
+                        </a>
+                        <strong th:if="${post.user == null}">Guest</strong>
+                    </p>
+                    <span class="post-timestamp" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+                </div>
+            </div>
+            <p th:text="${post.content}"></p>
 
             <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
                  th:if="${post.images != null and !post.images.isEmpty()}">
