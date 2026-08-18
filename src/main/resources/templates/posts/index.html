@@ -112,7 +112,7 @@
             </p>
 
             <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
-                <input type="text" name="content" placeholder="Leave a comment..." />
+                <input type="text" name="content" placeholder="Leave a comment..." required/>
                 <button type="submit">Comment</button>
             </form>
         </div>
