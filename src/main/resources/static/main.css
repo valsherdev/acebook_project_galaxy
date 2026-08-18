@@ -118,6 +118,72 @@
     padding: 5px;
 }
 
+.feed-filter {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.25rem;
+}
+
+.feed-filter summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f46e5;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.feed-filter summary::-webkit-details-marker {
+    display: none;
+}
+
+.feed-filter summary:hover {
+    background: #e0e7ff;
+}
+
+.feed-filter-options {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(44, 25, 79, 0.08);
+    overflow: hidden;
+    z-index: 10;
+}
+
+.feed-filter-options a {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem 1rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none;
+}
+
+.feed-filter-options a:hover {
+    background: #f1f5f9;
+}
+
+.feed-filter-options a.active {
+    color: #4f46e5;
+    background: #eef2ff;
+}
+
+
 .friends-page {
     width: 100%;
 }

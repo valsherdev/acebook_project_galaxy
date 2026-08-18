@@ -34,6 +34,16 @@
             </div>
         </form>
 
+        <details class="feed-filter">
+            <summary>Filter ▾</summary>
+            <div class="feed-filter-options">
+                <a th:href="@{/posts(filter='all')}"
+                   th:classappend="${currentFilter == 'all'} ? 'active'">All posts</a>
+                <a th:href="@{/posts(filter='friends')}"
+                   th:classappend="${currentFilter == 'friends'} ? 'active'">Friends only</a>
+            </div>
+        </details>
+
     <ul>
 
     <li class="post-box" th:each="post: ${posts}" th:with="profile=${post.user?.profile},

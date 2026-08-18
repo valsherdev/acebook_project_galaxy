@@ -53,7 +53,7 @@ public class PostsController {
     ProfileRepository profileRepository;
 
     @GetMapping("/posts")
-    public String index(Model model) {
+    public String index(@RequestParam(name = "filter", defaultValue = "all") String filter, Model model) {
         User currentUser = getCurrentUser();
 
         model.addAttribute("currentUserId", currentUser.getId());
@@ -69,8 +69,19 @@ public class PostsController {
         for (Friendship friendship : outgoingPending) pendingIds.add(friendship.getFriend().getId());
         model.addAttribute("currentUserPendingIds", pendingIds);
 
-        Iterable<Post> posts = repository.findAllByOrderByCreatedAtDesc();
+        Iterable<Post> allPosts = repository.findAllByOrderByCreatedAtDesc();
+
+        List<Post> posts = new ArrayList<>();
+        for (Post post : allPosts) {
+            boolean isFriendsPost = post.getUser() != null && friendIds.contains(post.getUser().getId());
+            if ("friends".equals(filter)) {
+                if (isFriendsPost) posts.add(post);
+            } else {
+                posts.add(post);
+            }
+        }
         model.addAttribute("posts", posts);
+        model.addAttribute("currentFilter", filter);
         model.addAttribute("post", new Post());
 
         Map<Long, List<Comment>> recentCommentsByPost = new HashMap<>();
