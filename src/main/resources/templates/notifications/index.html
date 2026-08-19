@@ -5,18 +5,38 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Notifications</title>
+    <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/main.css" />
 </head>
 <body>
 
 <section layout:fragment="content">
-    <h1>Notifications</h1>
+<!--    <div class="notifications-container">-->
+<!--        <h1>Notifications</h1>-->
 
-    <div th:each="notification : ${notifications}">
-        <a th:href="@{${notification.link}}" th:text="${notification.message}"></a>
-        <span th:text="${#temporals.format(notification.createdAt, 'dd MMM, HH:mm')}"></span>
-    </div>
+<!--    <div th:each="notification : ${notifications}">-->
+<!--        <a th:href="@{${notification.link}}" th:text="${notification.message}"></a>-->
+<!--        <span th:text="${#temporals.format(notification.createdAt, 'dd MMM, HH:mm')}"></span>-->
+<!--    </div>-->
 
-    <p th:if="${notifications.isEmpty()}">No notifications yet.</p>
+<!--    <p th:if="${notifications.isEmpty()}">No notifications yet.</p>-->
+
+        <div class="friends-page">
+            <h2>Notifications</h2>
+
+            <div th:if="${notifications.isEmpty()}" class="no-notifications" >
+                <p>No notifications yet.</p>
+            </div>
+
+            <a th:each="notification : ${notifications}"
+               th:href="@{'/notifications/' + ${notification.id} + '/click'}"
+               class="friend-row notification-row"
+               th:classappend="${!notification.read} ? ' unread' : ''">
+
+                <span class="friend-username" th:text="${notification.message}"></span>
+                <span class="notification-time" th:text="${#temporals.format(notification.createdAt, 'dd MMM, HH:mm')}"></span>
+            </a>
+        </div>
 </section>
 
 </body>
