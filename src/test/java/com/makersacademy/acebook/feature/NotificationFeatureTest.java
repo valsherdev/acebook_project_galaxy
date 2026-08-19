@@ -103,7 +103,7 @@ public class NotificationFeatureTest {
     }
 
     @Test
-    public void visitingNotificationsPageMarksAsRead() {
+    public void visitingNotificationsPageAloneDoesNotMarkAnythingAsRead() {
         String myEmail = faker.name().username() + "@email.com";
         signUp(myEmail);
 
@@ -117,10 +117,73 @@ public class NotificationFeatureTest {
         String pageText = driver.findElement(By.tagName("body")).getText();
         assertTrue(pageText.contains("someone commented on your post"));
 
+
         driver.get("http://localhost:8081/posts");
         String navBarAfter = driver.findElement(By.cssSelector(".navbar")).getText();
-        assertFalse(navBarAfter.contains("Notifications (1)"));
+        assertTrue(navBarAfter.contains("Notifications (1)"));
     }
+
+
+    @Test
+    public void clickingANotificationMarksItAsReadAndRedirectsToItsLink() {
+        Long ownerId = insertUser(faker.name().username() + "@email.com");
+        Long postId = insertPost(ownerId, "A new post");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        jdbcTemplate.update(
+                "INSERT INTO notifications (user_id, message, link, read) VALUES (?, ?, ?, false)",
+                myId, "someone liked your post", "/posts/" + postId);
+        Long notificationId = jdbcTemplate.queryForObject(
+                "SELECT id FROM notifications WHERE user_id = ?", Long.class, myId);
+
+        driver.get("http://localhost:8081/notifications");
+        driver.findElement(By.cssSelector("a[href='/notifications/" + notificationId + "/click']")).click();
+
+        wait.until(ExpectedConditions.urlContains("/posts/" + postId));
+        assertTrue(driver.getCurrentUrl().endsWith("/posts/" + postId));
+
+        Boolean readStatus = jdbcTemplate.queryForObject(
+                "SELECT read FROM notifications WHERE id = ?", Boolean.class, notificationId);
+        assertTrue(readStatus);
+
+        driver.get("http://localhost:8081/posts");
+        String navBarAfter = driver.findElement(By.cssSelector(".navbar")).getText();
+        assertFalse(navBarAfter.contains("Notifications ("));
+    }
+
+    @Test
+    public void clickingOneNotificationDoesNotMarkOthersAsRead() {
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        jdbcTemplate.update(
+                "INSERT INTO notifications (user_id, message, link, read) VALUES (?, ?, ?, false)",
+                myId, "first notification", "/posts/1");
+        jdbcTemplate.update(
+                "INSERT INTO notifications (user_id, message, link, read) VALUES (?, ?, ?, false)",
+                myId, "second notification", "/posts/2");
+
+        Long firstId = jdbcTemplate.queryForObject(
+                "SELECT id FROM notifications WHERE user_id = ? AND message = ?", Long.class, myId, "first notification");
+        Long secondId = jdbcTemplate.queryForObject(
+                "SELECT id FROM notifications WHERE user_id = ? AND message = ?", Long.class, myId, "second notification");
+
+        driver.get("http://localhost:8081/notifications");
+        driver.findElement(By.cssSelector("a[href='/notifications/" + firstId + "/click']")).click();
+        wait.until(ExpectedConditions.urlContains("/posts/1"));
+
+        Boolean firstStatus = jdbcTemplate.queryForObject(
+                "SELECT read FROM notifications WHERE id = ?", Boolean.class, firstId);
+        Boolean secondStatus = jdbcTemplate.queryForObject(
+                "SELECT read FROM notifications WHERE id = ?", Boolean.class, secondId);
+        assertTrue(firstStatus);
+        assertFalse(secondStatus);
+    }
+
 
     @Test
     public void commentingOnAnotherUsersPostCreatesNotificationForOwner() {

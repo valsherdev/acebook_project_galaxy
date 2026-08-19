@@ -252,4 +252,57 @@ public class CommentFeatureTest {
         assertTrue(pageText.contains("fourth of four"));
     }
 
+    @Test
+    public void commentFromAnotherUserDisplaysTheirUsername() {
+        Long ownerId = insertUser(faker.name().username() + "@email.com");
+        Long postId = insertPost(ownerId, "A new post");
+
+        String otherCommenterUsername = faker.name().username() + "@email.com";
+        Long otherCommenterId = insertUser(otherCommenterUsername);
+        insertComment(postId, otherCommenterId, "a comment from a user with no profile", Timestamp.valueOf("2026-01-01 09:00:00"));
+
+        String viewerEmail = faker.name().username() + "@email.com";
+        signUp(viewerEmail);
+
+        driver.get("http://localhost:8081/posts");
+        String pageText = driver.findElement(By.tagName("body")).getText();
+
+        assertTrue(pageText.contains(otherCommenterUsername));
+        assertTrue(pageText.contains("a comment from a user with no profile"));
+    }
+
+    @Test
+    public void fullPostPageListsAllCommentsOldestToNewest() {
+        Long ownerId = insertUser(faker.name().username() + "@email.com");
+        Long postId = insertPost(ownerId, "A new post");
+
+        Long commenterId = insertUser(faker.name().username() + "@email.com");
+        insertComment(postId, commenterId, "first comment", Timestamp.valueOf("2026-01-01 09:00:00"));
+        insertComment(postId, commenterId, "second comment", Timestamp.valueOf("2026-01-02 09:00:00"));
+        insertComment(postId, commenterId, "third comment", Timestamp.valueOf("2026-01-03 09:00:00"));
+        insertComment(postId, commenterId, "fourth comment", Timestamp.valueOf("2026-01-04 09:00:00"));
+        insertComment(postId, commenterId, "most recent comment", Timestamp.valueOf("2026-01-05 09:00:00"));
+
+        String viewerEmail = faker.name().username() + "@email.com";
+        signUp(viewerEmail);
+
+        driver.get("http://localhost:8081/posts/" + postId);
+        String pageText = driver.findElement(By.tagName("body")).getText();
+
+
+        assertTrue(pageText.contains("first comment"));
+        assertTrue(pageText.contains("most recent comment"));
+
+        int firstIndex = pageText.indexOf("first comment");
+        int secondIndex = pageText.indexOf("second comment");
+        int thirdIndex = pageText.indexOf("third comment");
+        int fourthIndex = pageText.indexOf("fourth comment");
+        int fifthIndex = pageText.indexOf("most recent comment");
+
+        assertTrue(firstIndex < secondIndex);
+        assertTrue(secondIndex < thirdIndex);
+        assertTrue(thirdIndex < fourthIndex);
+        assertTrue(fourthIndex < fifthIndex);
+    }
+
 }
