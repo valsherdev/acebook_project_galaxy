@@ -25,19 +25,18 @@ public class NotificationController {
         User currentUser = getCurrentUser();
         List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(currentUser.getId());
         model.addAttribute("notifications", notifications);
-
-//        for (Notification notification : notifications) {
-//            if (!notification.isRead()) {
-//                notification.setRead(true);
-//                notificationRepository.save(notification);
-//            }
-//        }
         return "notifications/index";
     }
 
     @GetMapping("/notifications/{id}/click")
     public String clickNotification(@PathVariable Long id) {
         Notification notification = notificationRepository.findById(id).orElseThrow();
+
+        // checks ownership
+        User currentUser = getCurrentUser();
+        if (!notification.getUser().getId().equals(currentUser.getId())) {
+            return "redirect:/notifications";
+        }
 
         notification.setRead(true);
         notificationRepository.save(notification);

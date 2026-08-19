@@ -18,7 +18,7 @@
             <a th:if="${post.user != null}"
                th:href="@{'/profile/' + ${post.user.id}}">
                 <img class="profile-pic-placeholder"
-                     th:src="${post.user != null and post.user.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${post.user.profile.convertImageByteToString()} :
+                     th:src="${post.user != null and post.user.profile != null and post.user.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${post.user.profile.convertImageByteToString()} :
                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
                      alt="Profile Picture" />
             </a>
