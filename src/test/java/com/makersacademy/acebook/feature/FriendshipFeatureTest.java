@@ -36,7 +36,7 @@ public class FriendshipFeatureTest {
         System.setProperty("webdriver.chrome.driver", "/opt/homebrew/bin/chromedriver");
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait =  new WebDriverWait(driver, Duration.ofSeconds(15));
         faker = new Faker();
     }
 
@@ -71,6 +71,7 @@ public class FriendshipFeatureTest {
         return jdbcTemplate.queryForObject(
                 "SELECT id FROM users WHERE username = ?", Long.class, email);
     }
+
 
 
     @Test
