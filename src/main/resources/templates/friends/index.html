@@ -29,10 +29,17 @@
   </div>
 
   <h2>Your friends</h2>
-  <a class="friend-simple" th:if="${friends != null}"
-     th:href="@{'/profile/' + ${friend.id}}" th:each="friend : ${friends}">
-    <span th:text="${friend.name}"></span>
-  </a>
+  <div th:if="${friends != null}">
+    <div th:each="friend : ${friends}" class="friend-row" >
+        <a class="friend-username" th:if="${friends != null}"
+           th:href="@{'/profile/' + ${friend.id}}">
+          <span th:text="${friend.name}"></span>
+        </a>
+        <form th:action="@{'/friends/' + ${friend.id} + '/delete'}" method="post">
+          <button class="delete-friend-btn" type="submit">Remove Friend</button>
+        </form>
+    </div>
+</div>
 
   <h2>People you may know</h2>
   <div class="friend-row" th:each="suggestion : ${suggestions}">

@@ -790,3 +790,20 @@ a.back-link {
 .post-box:hover {
     box-shadow: 0 14px 8px rgba(0, 0, 0, 0.08);
 }
+
+
+.delete-friend-btn {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: #466be5;
+    background: #eef8ff;
+    border: 1px solid #c7e1fe;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}

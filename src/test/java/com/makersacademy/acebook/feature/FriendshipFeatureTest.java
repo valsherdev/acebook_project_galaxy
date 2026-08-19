@@ -280,4 +280,31 @@ public class FriendshipFeatureTest {
         assertTrue(driver.findElements(By.xpath("//button[contains(text(), 'Add Friend')]")).isEmpty());
     }
 
+    @Test
+    public void userCanRemoveAcceptedFriend() {
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        String friendUsername = faker.name().username() + "@email.com";
+        Long friendId = insertUser(friendUsername);
+
+        jdbcTemplate.update(
+                "INSERT INTO friendships (user_id, friend_id, status) VALUES (?, ?, 'ACCEPTED')",
+                myId, friendId);
+
+        driver.get("http://localhost:8081/friends");
+
+        String pageText = driver.findElement(By.tagName("body")).getText();
+        assertTrue(pageText.contains(friendUsername));
+
+        driver.findElement(By.cssSelector("button.delete-friend-btn")).click();
+
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+            Integer remaining = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM friendships WHERE (user_id = ? AND friend_id = ?) OR (friend_id = ? AND user_id = ?)",
+                    Integer.class, myId, friendId, friendId, myId);
+            assertEquals(0, remaining);
+        });
+    }
 }
