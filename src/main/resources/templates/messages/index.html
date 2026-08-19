@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Messages</title>
+  <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+<div layout:fragment="content">
+
+  <h2>Messages</h2>
+
+  <div class="conversation-list">
+    <div th:each="message : ${conversations}"
+         th:with="partner=${message.sender.id == currentUserId} ? ${message.recipient} : ${message.sender},
+                      unreadCount=${unreadCountByPartnerId.get(partner.id)}"
+         class="conversation-row">
+      <a th:href="@{'/messages/' + ${partner.id}}" class="conversation-link">
+        <span class="conversation-name" th:text="${partner.name}"></span>
+        <span class="conversation-preview" th:text="${message.content}"></span>
+        <span class="conversation-timestamp"
+              th:text="${#temporals.format(message.createdAt, 'dd MMM, HH:mm')}"></span>
+        <span class="conversation-unread-badge" th:if="${unreadCount > 0}" th:text="${unreadCount}"></span>
+      </a>
+    </div>
+    <p th:if="${conversations.isEmpty()}">No conversations yet.</p>
+  </div>
+
+</div>
+</body>
+</html>
