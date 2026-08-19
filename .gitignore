@@ -11,3 +11,4 @@ dependency-reduced-pom.xml
 .settings/
 **/.DS_Store
 **/application.yml
+htmlReport/
