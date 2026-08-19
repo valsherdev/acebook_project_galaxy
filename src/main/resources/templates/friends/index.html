@@ -14,6 +14,7 @@
   <h2>Friend requests</h2>
   <div class="friend-row" th:each="request : ${incomingRequests}">
     <a class="friend-username" th:href="@{'/profile/' + ${request.user.id}}" th:text="${request.user.name}"></a>
+    <a th:href="@{'/messages/' + ${request.user.id}}" class="friend-btn message-btn">Message</a>
     <form th:action="@{'/friends/' + ${request.id} + '/accept'}" method="post" style="display:inline">
       <button type="submit" class="friend-btn">Accept</button>
     </form>
@@ -25,6 +26,7 @@
   <h2>Requests you've sent</h2>
   <div class="friend-row" th:each="request : ${outgoingRequests}">
     <a class="friend-username" th:href="@{'/profile/' + ${request.friend.id}}" th:text="${request.friend.name}"></a>
+    <a th:href="@{'/messages/' + ${request.friend.id}}" class="friend-btn message-btn">Message</a>
     <span class="friend-pending">Pending</span>
   </div>
 
@@ -35,6 +37,7 @@
            th:href="@{'/profile/' + ${friend.id}}">
           <span th:text="${friend.name}"></span>
         </a>
+        <a th:href="@{'/messages/' + ${friend.id}}" class="friend-btn message-btn">Message</a>
         <form th:action="@{'/friends/' + ${friend.id} + '/delete'}" method="post">
           <button class="delete-friend-btn" type="submit">Remove Friend</button>
         </form>
@@ -44,6 +47,7 @@
   <h2>People you may know</h2>
   <div class="friend-row" th:each="suggestion : ${suggestions}">
     <a class="friend-username" th:href="@{'/profile/' + ${suggestion.id}}" th:text="${suggestion.name}"></a>
+    <a th:href="@{'/messages/' + ${suggestion.id}}" class="friend-btn message-btn">Message</a>
     <form th:action="@{/friends/add}" method="post" style="display:inline">
       <input type="hidden" name="friendId" th:value="${suggestion.id}"/>
       <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>

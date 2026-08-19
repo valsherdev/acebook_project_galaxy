@@ -16,6 +16,7 @@
   <div class="message-thread">
     <div th:each="message : ${messages}"
          th:class="${message.sender.id == currentUserId} ? 'message-bubble sent' : 'message-bubble received'">
+      <span class="message-sender" th:text="${message.sender.name}"></span>
       <span th:text="${message.content}"></span>
       <span class="message-timestamp" th:text="${#temporals.format(message.createdAt, 'dd MMM, HH:mm')}"></span>
     </div>
