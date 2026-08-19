@@ -1,11 +1,14 @@
 package com.makersacademy.acebook.controller;
 
+import com.makersacademy.acebook.model.Friendship;
 import com.makersacademy.acebook.model.Profile;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.model.Post;
+import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.ProfileRepository;
 import com.makersacademy.acebook.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -19,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import java.io.IOException;
@@ -34,6 +40,8 @@ public class ProfileController {
 
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    private FriendshipRepository friendshipRepository;
 
     @GetMapping("/profile")
     public ModelAndView getProfile() {
@@ -43,9 +51,14 @@ public class ProfileController {
                 postRepository.findAllByUserIdOrderByCreatedAtDesc(profile.getUser().getId());
 
         ModelAndView modelAndView = new ModelAndView("profiles/profile");
+        User currentUser = getCurrentUser();
         modelAndView.addObject("profile", profile);
         modelAndView.addObject("posts", posts);
-        modelAndView.addObject("currentUser", getCurrentUser());
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("currentUserId", currentUser.getId());
+
+        addFriendshipAttributesToModel(modelAndView, currentUser);
+
         return modelAndView;
     }
 
@@ -99,9 +112,13 @@ public class ProfileController {
                 postRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
 
         ModelAndView modelAndView = new ModelAndView("profiles/profile");
+        User currentUser = getCurrentUser();
         modelAndView.addObject("profile", profile);
         modelAndView.addObject("posts", posts);
-        modelAndView.addObject("currentUser", getCurrentUser());
+        modelAndView.addObject("currentUser", currentUser);
+        modelAndView.addObject("currentUserId", currentUser.getId());
+
+        addFriendshipAttributesToModel(modelAndView, currentUser);
 
         return modelAndView;
     }
@@ -133,6 +150,19 @@ public class ProfileController {
         return modelAndView;
     }
 
+
+
+    private void addFriendshipAttributesToModel(ModelAndView modelAndView, User currentUser) {
+        List<Friendship> outgoingPending = friendshipRepository.findOutgoingPendingRequests(currentUser.getId());
+        List<Long> pendingIds = new ArrayList<>();
+        for (Friendship friendship : outgoingPending) {
+            pendingIds.add(friendship.getFriend().getId());
+        }
+        modelAndView.addObject("currentUserPendingIds", pendingIds);
+
+        List<Long> friendIds = friendshipRepository.findAcceptedFriendIdsByUserId(currentUser.getId());
+        modelAndView.addObject("currentUserFriendIds", friendIds);
+    }
 
     private Profile getOrCreateProfileOfCurrentUser() {
         User currentUser = getCurrentUser();

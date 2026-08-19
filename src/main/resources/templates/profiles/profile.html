@@ -22,6 +22,18 @@
         <h2>
             <span th:text="${profile.user.name}">Name</span>'s Profile
         </h2>
+
+        <div th:if="${profile!= null and profile.user != null and profile.user.id != currentUser.id}" class="post-friend-action">
+            <form th:action="@{/friends/add}" method="post"
+                  th:if="${!currentUserFriendIds.contains(profile.user.id) and !currentUserPendingIds.contains(profile.user.id)}">
+                <input type="hidden" name="friendId" th:value="${profile.user.id}"/>
+                <input type="hidden" name="currentUserId" th:value="${currentUser.id}"/>
+                <button class="add-friend-btn" type="submit">Add Friend</button>
+            </form>
+            <span class="friends-label" th:if="${currentUserFriendIds.contains(profile.user.id)}">Friends</span>
+            <span class="pending-label" th:if="${currentUserPendingIds.contains(profile.user.id)}">Request sent</span>
+        </div>
+
     </div>
     <div class="profile-details">
         <p><strong>First name:</strong> <span th:text="${profile.firstName}">First</span></p>
