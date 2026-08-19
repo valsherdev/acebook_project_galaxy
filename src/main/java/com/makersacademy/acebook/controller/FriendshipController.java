@@ -2,6 +2,7 @@ package com.makersacademy.acebook.controller;
 
 import com.makersacademy.acebook.model.Friendship;
 import com.makersacademy.acebook.model.Notification;
+import com.makersacademy.acebook.model.Post;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.NotificationRepository;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class FriendshipController {
@@ -100,6 +102,20 @@ public class FriendshipController {
         friendshipRepository.delete(friendship);
         return new RedirectView("/friends");
     }
+
+    @PostMapping("/friends/{friendId}/delete")
+    public RedirectView delete(@PathVariable Long friendId) {
+
+        User currentUser = getCurrentUser();
+
+        Friendship friendship = friendshipRepository.findAcceptedFriendship(currentUser.getId(), friendId)
+                .orElseThrow(() -> new RuntimeException("Friendship not found!"));
+
+        friendshipRepository.delete(friendship);
+
+        return new RedirectView("/friends");
+    }
+
 
     private User getCurrentUser() {
         DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder
