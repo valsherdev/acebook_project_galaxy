@@ -120,4 +120,124 @@ public class SearchProfilesFeatureTest {
         String pageText = driver.findElement(By.tagName("body")).getText();
         assertTrue(pageText.contains("jane.johnson@email.com"));
     }
+
+    @Test
+    public void userSearchesProfilesAndFindsEmailAddressNonFilledInFirstNameAndLastNameInProfileAndOtherUsersWithSearchQuery() {
+        String myEmail = faker.name().username() + "@email.com";
+
+        driver.get("http://localhost:" + port + "/");
+        driver.findElement(By.linkText("Sign up")).click();
+        driver.findElement(By.name("email")).sendKeys(myEmail);
+        driver.findElement(By.name("password")).sendKeys("P@55qw0rd");
+        driver.findElement(By.name("action")).click();
+
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("greeting")));
+
+        String otherUsername = "jane.johnson@email.com";
+        String anotherUsername = "janesmith@email.com";
+
+        jdbcTemplate.update("INSERT INTO users (username, enabled) VALUES (?, true)", otherUsername);
+        jdbcTemplate.update("INSERT INTO users (username, enabled) VALUES (?, true)", anotherUsername);
+
+        Long userId = jdbcTemplate.queryForObject(
+                "SELECT id FROM users WHERE username = ?",
+                Long.class,
+                otherUsername
+        );
+
+        Long anotherUserId = jdbcTemplate.queryForObject(
+                "SELECT id FROM users WHERE username = ?",
+                Long.class,
+                anotherUsername
+        );
+
+        jdbcTemplate.update("INSERT INTO profiles (first_name, last_name, current_location, hometown, about_me, user_id, profile_picture) " +
+                "VALUES ('Jane', 'Johnson', 'London', 'London', 'About me', ?, null)", userId);
+
+        jdbcTemplate.update("INSERT INTO profiles (first_name, last_name, current_location, hometown, about_me, user_id, profile_picture) " +
+                "VALUES (null, null, 'London', 'London', 'About me', ?, null)", anotherUserId);
+
+
+        driver.findElement(By.name("query")).sendKeys("Jane");
+        driver.findElement(By.cssSelector("form.search-box button")).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[contains(text(),'Search results for email address:')]")));
+
+        String pageText = driver.findElement(By.tagName("body")).getText();
+        assertTrue(pageText.contains("Jane Johnson"));
+        assertTrue(pageText.contains("janesmith@email.com"));
+    }
+
+    @Test
+    public void userSearchesEmptyStringAndReturnsNothingFoundMessage() {
+        String myEmail = faker.name().username() + "@email.com";
+
+        driver.get("http://localhost:" + port + "/");
+        driver.findElement(By.linkText("Sign up")).click();
+        driver.findElement(By.name("email")).sendKeys(myEmail);
+        driver.findElement(By.name("password")).sendKeys("P@55qw0rd");
+        driver.findElement(By.name("action")).click();
+
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("greeting")));
+
+        driver.findElement(By.name("query")).sendKeys("feature");
+        driver.findElement(By.cssSelector("form.search-box button")).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[contains(text(),'No profiles or email addresses found matching')]")));
+
+        String pageText = driver.findElement(By.tagName("body")).getText();
+        assertTrue(pageText.contains("No profiles or email addresses found matching"));
+        assertTrue(pageText.contains("feature"));
+
+    }
+
+    @Test
+    public void userSearchesProfilesAndFindsEmailAddressNonFilledInFirstNameAndLastNameInProfileAndOtherUsersWithSearchQueryWithLeadingWhitespace() {
+        String myEmail = faker.name().username() + "@email.com";
+
+        driver.get("http://localhost:" + port + "/");
+        driver.findElement(By.linkText("Sign up")).click();
+        driver.findElement(By.name("email")).sendKeys(myEmail);
+        driver.findElement(By.name("password")).sendKeys("P@55qw0rd");
+        driver.findElement(By.name("action")).click();
+
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("greeting")));
+
+        String otherUsername = "jane.johnson@email.com";
+        String anotherUsername = "janesmith@email.com";
+
+        jdbcTemplate.update("INSERT INTO users (username, enabled) VALUES (?, true)", otherUsername);
+        jdbcTemplate.update("INSERT INTO users (username, enabled) VALUES (?, true)", anotherUsername);
+
+        Long userId = jdbcTemplate.queryForObject(
+                "SELECT id FROM users WHERE username = ?",
+                Long.class,
+                otherUsername
+        );
+
+        Long anotherUserId = jdbcTemplate.queryForObject(
+                "SELECT id FROM users WHERE username = ?",
+                Long.class,
+                anotherUsername
+        );
+
+        jdbcTemplate.update("INSERT INTO profiles (first_name, last_name, current_location, hometown, about_me, user_id, profile_picture) " +
+                "VALUES ('Jane', 'Johnson', 'London', 'London', 'About me', ?, null)", userId);
+
+        jdbcTemplate.update("INSERT INTO profiles (first_name, last_name, current_location, hometown, about_me, user_id, profile_picture) " +
+                "VALUES (null, null, 'London', 'London', 'About me', ?, null)", anotherUserId);
+
+
+        driver.findElement(By.name("query")).sendKeys(" Jane");
+        driver.findElement(By.cssSelector("form.search-box button")).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[contains(text(),'Search results for email address:')]")));
+
+        String pageText = driver.findElement(By.tagName("body")).getText();
+        assertTrue(pageText.contains("Jane Johnson"));
+        assertTrue(pageText.contains("janesmith@email.com"));
+    }
 }

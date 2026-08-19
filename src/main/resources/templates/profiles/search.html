@@ -43,7 +43,7 @@
   </div>
 
   <div th:if="${searchQuery != null and searchQuery != '' and (profiles == null or #lists.isEmpty(profiles)) and (users == null or #lists.isEmpty(users))}">
-    <p>No profiles found matching "<span th:text="${searchQuery}"></span>".</p>
+    <p>No profiles or email addresses found matching "<span th:text="${searchQuery}"></span>".</p>
   </div>
 </div>
 </body>
