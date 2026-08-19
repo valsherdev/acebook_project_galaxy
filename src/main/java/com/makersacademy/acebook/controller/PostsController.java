@@ -143,8 +143,6 @@ public class PostsController {
                     currentUser.getName() + " commented on your post",
                     "/posts/" + post.getId()
             ));
-
-
         }
         String currentUrl = request.getHeader("Referer");
         String baseUrl = (currentUrl != null && !currentUrl.isEmpty()) ? currentUrl : "/posts";

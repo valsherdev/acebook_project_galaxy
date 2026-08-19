@@ -6,6 +6,7 @@ import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.NotificationRepository;
 import com.makersacademy.acebook.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -81,8 +82,8 @@ public class FriendshipController {
                         currentUser.getName() + " sent you a friend request",
                         "/friends"
                 ));
-                }
             }
+        }
         return new RedirectView("/friends");
     }
 
