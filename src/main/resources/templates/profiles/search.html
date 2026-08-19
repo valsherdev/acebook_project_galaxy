@@ -14,7 +14,7 @@
 <div layout:fragment="content">
 
   <div th:if="${profiles != null and !#lists.isEmpty(profiles)}">
-    <h2>Search results:</h2>
+    <h2>Search results for profiles:</h2>
     <div class="profile-list">
       <div th:each="profile : ${profiles}">
         <strong th:if="${profile.firstName != null}"
@@ -29,6 +29,7 @@
   <br>
 
   <div th:if="${users != null and !#lists.isEmpty(users)}">
+    <h2>Search results for email address:</h2>
     <div class="profile-list">
       <div th:each="user : ${users}">
         <strong th:text="${user.profile != null and user.profile.firstName != null and (#strings.containsIgnoreCase(user.profile.firstName, searchQuery)
