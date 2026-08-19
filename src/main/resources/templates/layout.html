@@ -21,6 +21,10 @@
             <li><a href="/posts">Home</a></li>
             <li><a href="/friends">Friends</a></li>
             <li><a href="/profile">Profile</a></li>
+            <li><a href="/messages">
+                Messages
+                <span th:if="${unreadMessageCount > 0}" th:text="'(' + ${unreadMessageCount} + ')'"></span>
+            </a></li>
             <li><a href="/notifications">
                 Notifications
                 <span th:if="${unreadNotificationCount > 0}" th:text="'(' + ${unreadNotificationCount} + ')'"></span>
