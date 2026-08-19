@@ -808,3 +808,30 @@ a.back-link {
     border-radius: 6px;
     transition: background-color 0.2s ease;
 }
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-box .form-control {
+    padding: 5px 7px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.search-box .btn-outline-success {
+    padding: 5px 7px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #2f1c59;
+    border: 1px solid #ffffff85;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-box .btn-outline-success:hover {
+    color: #2f1c59;
+    background-color: #ffffff;
+}
