@@ -28,4 +28,10 @@ public interface FriendshipRepository extends CrudRepository<Friendship, Long> {
 
     @Query("SELECT friendship FROM Friendship AS friendship WHERE (friendship.user.id = :id1 AND friendship.friend.id = :id2) OR (friendship.user.id = :id2 AND friendship.friend.id = :id1)")
     Optional<Friendship> findBetweenUsers(@Param("id1") Long id1, @Param("id2") Long id2);
+
+    @Query("SELECT friendship FROM Friendship friendship WHERE " +
+            "(friendship.user.id = :u1 AND friendship.friend.id = :u2 OR " +
+            " friendship.user.id = :u2 AND friendship.friend.id = :u1) " +
+            "AND friendship.status = 'ACCEPTED'")
+    Optional<Friendship> findAcceptedFriendship(@Param("u1") Long userId, @Param("u2") Long friendId);
 }

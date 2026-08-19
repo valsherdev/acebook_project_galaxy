@@ -101,6 +101,20 @@ public class FriendshipController {
         return new RedirectView("/friends");
     }
 
+    @PostMapping("/friends/{friendId}/delete")
+    public RedirectView delete(@PathVariable Long friendId) {
+
+        User currentUser = getCurrentUser();
+
+        Friendship friendship = friendshipRepository.findAcceptedFriendship(currentUser.getId(), friendId)
+                .orElseThrow(() -> new RuntimeException("Friendship not found!"));
+
+        friendshipRepository.delete(friendship);
+
+        return new RedirectView("/friends");
+    }
+
+
     private User getCurrentUser() {
         DefaultOidcUser principal = (DefaultOidcUser) SecurityContextHolder
                 .getContext()
