@@ -12,15 +12,18 @@
 /**/
 
 .post-form {
-    display: flex;
-    align-items: center;
+    /*display: flex;*/
+    /*align-items: center;*/
     gap: 0.75rem;
     background: #eef2ff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 1.25rem;
     margin-bottom: 1.5rem;
-    /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);*/
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .profile-pic-placeholder {
@@ -62,8 +65,13 @@
 }
 
 .post-form-actions {
+    /*display: flex;*/
+    /*gap: 0.5rem;*/
     display: flex;
-    gap: 0.5rem;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
 }
 
 .post-form input[type="submit"],
@@ -384,7 +392,7 @@ h2 {
 .image-upload-icon input[type="file"] {
     display: inline-block;
     font-size: 13px;
-    max-width: 1px;
+    max-width: 83px;
 }
 
 .image-upload-icon input[type="file"]::file-selector-button {
@@ -767,4 +775,18 @@ a.back-link {
 
 .friend-row:hover {
     background: #e8ebf3;
+}
+
+.post-form-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-form-top input[type="text"] {
+    flex-grow: 1;
+}
+
+.post-box:hover {
+    box-shadow: 0 14px 8px rgba(0, 0, 0, 0.08);
 }

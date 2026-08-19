@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
@@ -153,6 +154,21 @@ public class PostsController {
     public String show(@PathVariable Long id, Model model) {
         Post post = repository.findById(id).orElseThrow();
         model.addAttribute("post", post);
+
+        User currentUser = getCurrentUser();
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("currentUserId", currentUser.getId());
+
+        List<Friendship> outgoingPending = friendshipRepository.findOutgoingPendingRequests(currentUser.getId());
+        List<Long> pendingIds = new ArrayList<>();
+        for (Friendship friendship : outgoingPending) {
+            pendingIds.add(friendship.getFriend().getId());
+        }
+        model.addAttribute("currentUserPendingIds", pendingIds);
+
+        List<Long> friendIds = friendshipRepository.findAcceptedFriendIdsByUserId(currentUser.getId());
+        model.addAttribute("currentUserFriendIds", friendIds);
+
         return "posts/show";
     }
 
