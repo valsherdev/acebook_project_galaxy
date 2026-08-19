@@ -189,7 +189,7 @@
     width: 100%;
 }
 
-.friends-page h2 {
+h2 {
     margin: 2rem 0 0.75rem;
     padding-bottom: 0.5rem;
 
@@ -351,7 +351,7 @@
 .grid-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     margin-bottom: 15px;
 }
@@ -568,6 +568,10 @@ a.back-link {
 
 .profile-header h2 {
     margin: 0;
+    font-size: 24px;
+    color: #2c194f;
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .profile-details {
@@ -679,4 +683,88 @@ a.back-link {
 
 .delete-btn:hover {
     background-color: #dc2626;
+}
+
+.edit-profile-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-profile-page h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    width: 80%;
+    text-align: center;
+    margin: 10px;
+}
+
+.edit-profile-form {
+    width: 100%;
+    background: #ffffff;
+    max-width: 550px;
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 14px;
+}
+
+.edit-profile-form input[type="text"],
+.edit-profile-form input[type="file"] {
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
+
+.edit-profile-form input[type="text"]:focus {
+    border-color: #3b82f6;
+    background-color: #ffffff;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.edit-profile-form button[type="submit"] {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-profile-form button[type="submit"]:hover {
+    background-color: #d6dcef;
+}
+
+.edit-profile-form a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.edit-profile-form a:hover {
+    color: #0f172a;
+    text-decoration: underline;
+}
+
+.friend-row:hover {
+    background: #e8ebf3;
 }

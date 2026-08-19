@@ -81,8 +81,8 @@ public class FriendshipController {
                         currentUser.getName() + " sent you a friend request",
                         "/friends"
                 ));
-                }
             }
+        }
         return new RedirectView("/friends");
     }
 

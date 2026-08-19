@@ -6,24 +6,47 @@
     <meta charset="UTF-8"/>
     <title>Edit profile</title>
     <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/main.css" />
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h2>Edit profile</h2>
+    <div class="edit-profile-page">
+        <h2>Edit profile</h2>
 
-    <form th:action="@{/profile/edit}" th:object="${profile}" method="post" enctype="multipart/form-data">
-        Profile picture: <input type="file" name="imageFile" /><br/>
-        First name: <input type="text" th:field="*{firstName}" /><br/>
-        Last name: <input type="text" th:field="*{lastName}" /><br/>
-        Current location: <input type="text" th:field="*{currentLocation}" /><br/>
-        Hometown: <input type="text" th:field="*{hometown}" /><br/>
-        About me: <input type="text" th:field="*{aboutMe}" /><br/>
-        <button type="submit">Save changes</button>
-        <a th:href="@{/profile}">Cancel</a>
+        <form class="edit-profile-form" th:action="@{/profile/edit}" th:object="${profile}" method="post" enctype="multipart/form-data">
+            <label class="form-group">
+                Profile picture: <input type="file" name="imageFile" />
+            </label>
 
-    </form>
+            <label class="form-group">
+                First name: <input type="text" th:field="*{firstName}" />
+            </label>
 
+            <label class="form-group">
+                Last name: <input type="text" th:field="*{lastName}" />
+            </label>
+
+            <label class="form-group">
+                Current location: <input type="text" th:field="*{currentLocation}" />
+            </label>
+
+            <label class="form-group">
+                Hometown: <input type="text" th:field="*{hometown}" />
+            </label>
+
+            <label class="form-group">
+                About me: <input type="text" th:field="*{aboutMe}" />
+            </label>
+
+            <div class="form-actions">
+                <button type="submit">Save changes</button>
+                <a th:href="@{/profile}">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
 </body>

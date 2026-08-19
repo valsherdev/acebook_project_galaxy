@@ -13,7 +13,7 @@
 
   <h2>Friend requests</h2>
   <div class="friend-row" th:each="request : ${incomingRequests}">
-    <span class="friend-username" th:text="${request.user.name}"></span>
+    <a class="friend-username" th:href="@{'/profile/' + ${request.user.id}}" th:text="${request.user.name}"></a>
     <form th:action="@{'/friends/' + ${request.id} + '/accept'}" method="post" style="display:inline">
       <button type="submit" class="friend-btn">Accept</button>
     </form>
@@ -24,18 +24,19 @@
 
   <h2>Requests you've sent</h2>
   <div class="friend-row" th:each="request : ${outgoingRequests}">
-    <span class="friend-username" th:text="${request.friend.name}"></span>
+    <a class="friend-username" th:href="@{'/profile/' + ${request.friend.id}}" th:text="${request.friend.name}"></a>
     <span class="friend-pending">Pending</span>
   </div>
 
   <h2>Your friends</h2>
-  <div class="friend-simple" th:each="friend : ${friends}">
+  <a class="friend-simple" th:if="${friends != null}"
+     th:href="@{'/profile/' + ${friend.id}}" th:each="friend : ${friends}">
     <span th:text="${friend.name}"></span>
-  </div>
+  </a>
 
   <h2>People you may know</h2>
   <div class="friend-row" th:each="suggestion : ${suggestions}">
-    <span class="friend-username" th:text="${suggestion.name}"></span>
+    <a class="friend-username" th:href="@{'/profile/' + ${suggestion.id}}" th:text="${suggestion.name}"></a>
     <form th:action="@{/friends/add}" method="post" style="display:inline">
       <input type="hidden" name="friendId" th:value="${suggestion.id}"/>
       <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
