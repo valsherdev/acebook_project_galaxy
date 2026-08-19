@@ -26,13 +26,23 @@ public class NotificationController {
         List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(currentUser.getId());
         model.addAttribute("notifications", notifications);
 
-        for (Notification notification : notifications) {
-            if (!notification.isRead()) {
-                notification.setRead(true);
-                notificationRepository.save(notification);
-            }
-        }
+//        for (Notification notification : notifications) {
+//            if (!notification.isRead()) {
+//                notification.setRead(true);
+//                notificationRepository.save(notification);
+//            }
+//        }
         return "notifications/index";
+    }
+
+    @GetMapping("/notifications/{id}/click")
+    public String clickNotification(@PathVariable Long id) {
+        Notification notification = notificationRepository.findById(id).orElseThrow();
+
+        notification.setRead(true);
+        notificationRepository.save(notification);
+
+        return "redirect:" + notification.getLink();
     }
 
     private User getCurrentUser() {

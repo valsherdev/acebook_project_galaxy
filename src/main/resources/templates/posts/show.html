@@ -6,23 +6,36 @@
     <meta charset="UTF-8"/>
     <title>Post</title>
     <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/theme.css" />
 </head>
 <body>
 <div layout:fragment="content">
 
     <div class="post-box">
-        <a th:href="@{/posts}">&larr; Back to feed</a>
-        <p>
-            Posted by
+        <a class="back-link" th:href="@{/posts}">&larr; Back to feed </a>
+
+        <div class="post-author-container">
             <a th:if="${post.user != null}"
-               th:href="@{'/profile/' + ${post.user.id}}"
-               th:text="${post.user.name}">
-                Name
+               th:href="@{'/profile/' + ${post.user.id}}">
+                <img class="profile-pic-placeholder"
+                     th:src="${post.user != null and post.user.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${post.user.profile.convertImageByteToString()} :
+                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                     alt="Profile Picture" />
             </a>
-            <strong th:if="${post.user == null}">Guest</strong>:
-            <span th:text="${post.content}"></span>
-            <span th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
-        </p>
+            <div class="post-meta">
+                <p class="post-author-text">
+                    <a th:if="${post.user != null}"
+                       th:href="@{'/profile/' + ${post.user.id}}"
+                       th:text="${post.user.name}">
+                        Name
+                    </a>
+                    <strong th:if="${post.user == null}">Guest</strong>
+                </p>
+                <span class="post-timestamp" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+            </div>
+        </div>
+        <p th:text="${post.content}"></p>
+
 
         <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
              th:if="${post.images != null and !post.images.isEmpty()}">
@@ -71,7 +84,7 @@
             <span th:text="${#temporals.format(comment.createdAt, 'dd MMM, HH:mm')}"></span>
         </div>
 
-        <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
+        <form class="comment-form" th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
             <input type="text" name="content" placeholder="Write a comment..." required/>
             <button type="submit">Comment</button>
         </form>

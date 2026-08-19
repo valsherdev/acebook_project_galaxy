@@ -39,7 +39,7 @@
     <form th:action="@{/friends/add}" method="post" style="display:inline">
       <input type="hidden" name="friendId" th:value="${suggestion.id}"/>
       <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
-      <button type="submit">Add Friend</button>
+      <button class="add-friend-btn" type="submit">Add Friend</button>
     </form>
   </div>
 
