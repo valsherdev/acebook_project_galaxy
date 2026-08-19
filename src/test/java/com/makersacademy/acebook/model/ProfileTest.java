@@ -1,14 +1,13 @@
 package com.makersacademy.acebook.model;
 
 import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.*;
 
+
 public class ProfileTest {
+
 
     private byte[] dummyBytes = "test-image-bytes".getBytes();
     private final User user = new User("testuser@test.com", true);
@@ -117,7 +116,5 @@ public class ProfileTest {
     }
 
 }
-
-
 
 
