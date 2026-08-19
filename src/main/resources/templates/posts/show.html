@@ -33,6 +33,17 @@
                 </p>
                 <span class="post-timestamp" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
             </div>
+
+            <div th:if="${post.user != null and post.user.id != currentUserId}" class="post-friend-action">
+                <form th:action="@{/friends/add}" method="post"
+                      th:if="${!currentUserFriendIds.contains(post.user.id) and !currentUserPendingIds.contains(post.user.id)}">
+                    <input type="hidden" name="friendId" th:value="${post.user.id}"/>
+                    <input type="hidden" name="currentUserId" th:value="${currentUserId}"/>
+                    <button class="add-friend-btn" type="submit">Add Friend</button>
+                </form>
+                <span class="friends-label" th:if="${currentUserFriendIds.contains(post.user.id)}">Friends</span>
+                <span class="pending-label" th:if="${currentUserPendingIds.contains(post.user.id)}">Request sent</span>
+            </div>
         </div>
         <p th:text="${post.content}"></p>
 

@@ -15,7 +15,7 @@
         <h1>Posts Feed</h1>
 
         <form class="post-form" action="#" th:action="@{/posts}" th:object="${post}" method="post" enctype="multipart/form-data">
-
+            <div class="post-form-top">
             <a th:if="${profile != null and profile.user != null}"
                th:href="@{'/profile/' + ${profile.user.id}}">
                 <img class="profile-pic-placeholder"
@@ -25,15 +25,19 @@
             </a>
 
             <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
-
-            <label class="image-upload-icon">
-                <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />
-                <input type="file" name="imageFiles" multiple />
-            </label>
+            </div>
+<!--            <label class="image-upload-icon">-->
+<!--                <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />-->
+<!--                <input type="file" name="imageFiles" multiple />-->
+<!--            </label>-->
 
             <div class="post-form-actions">
+                <label class="image-upload-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />
+                    <input type="file" name="imageFiles" multiple />
+                </label>
                     <input type="submit" value="Submit" />
-<!--                    <input type="reset" value="Reset" />-->
+                    <input type="reset" value="Reset" />
             </div>
         </form>
 
