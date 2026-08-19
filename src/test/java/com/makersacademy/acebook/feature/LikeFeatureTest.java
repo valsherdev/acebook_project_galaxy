@@ -137,4 +137,62 @@ public class LikeFeatureTest {
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> assertEquals(1, likeCountFor(postId)));
     }
 
+    @Test
+    public void clickingLikeButtonAgainRemovesLike() {
+        Long ownerId = insertUser(faker.name().username() + "@email.com");
+        Long postId = insertPost(ownerId, "New post");
+
+        String likerEmail = faker.name().username() + "@email.com";
+        signUp(likerEmail);
+
+        driver.get("http://localhost:8081/posts");
+        By likeButton = By.cssSelector("form[action='/posts/" + postId + "/likes'] button");
+
+        driver.findElement(likeButton).click();
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> assertEquals(1, likeCountFor(postId)));
+
+        driver.findElement(likeButton).click();
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> assertEquals(0, likeCountFor(postId)));
+    }
+
+    @Test
+    public void likeButtonTextReflectsCount() {
+        Long ownerId = insertUser(faker.name().username() + "@email.com");
+        Long postId = insertPost(ownerId, "New post");
+
+        String likerEmail = faker.name().username() + "@email.com";
+        signUp(likerEmail);
+
+        driver.get("http://localhost:8081/posts");
+        By likeButton = By.cssSelector("form[action='/posts/" + postId + "/likes'] button");
+
+        driver.findElement(likeButton).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "1 likes"));
+        assertTrue(driver.findElement(By.tagName("body")).getText().contains("1 likes"));
+
+        driver.findElement(likeButton).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "0 likes"));
+        assertTrue(driver.findElement(By.tagName("body")).getText().contains("0 likes"));
+    }
+
+    @Test
+    public void multipleUsersLikingTheSamePostIncreasesCount() {
+        Long ownerId = insertUser(faker.name().username() + "@email.com");
+        Long postId = insertPost(ownerId, "Popular post");
+
+        String firstLikerEmail = faker.name().username() + "@email.com";
+        signUp(firstLikerEmail);
+        driver.get("http://localhost:8081/posts");
+        driver.findElement(By.cssSelector("form[action='/posts/" + postId + "/likes'] button")).click();
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> assertEquals(1, likeCountFor(postId)));
+
+
+        Long secondLikerId = insertUser(faker.name().username() + "@email.com");
+        jdbcTemplate.update("INSERT INTO likes (post_id, user_id) VALUES (?, ?)", postId, secondLikerId);
+
+        driver.navigate().refresh();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "2 likes"));
+        assertTrue(driver.findElement(By.tagName("body")).getText().contains("2 likes"));
+    }
+
 }
