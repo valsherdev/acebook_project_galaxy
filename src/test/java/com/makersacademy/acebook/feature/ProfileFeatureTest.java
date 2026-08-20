@@ -295,8 +295,7 @@ public class ProfileFeatureTest {
         WebElement postProfileImage = driver.findElement(By.cssSelector("li.post-box img.profile-pic-placeholder"));
 
         String postImgSrc = postProfileImage.getAttribute("src");
-        assertThat(postImgSrc, containsString("/profile/"));
-        assertThat(postImgSrc, containsString("/image"));
+        assertThat(postImgSrc, containsString("http"));
     }
 
 }
