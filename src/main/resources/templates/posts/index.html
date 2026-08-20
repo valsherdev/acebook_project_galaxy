@@ -18,9 +18,11 @@
             <div class="post-form-top">
             <a th:if="${profile != null and profile.user != null}"
                th:href="@{'/profile/' + ${profile.user.id}}">
+
                 <img class="profile-pic-placeholder"
-                     th:src="${profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
-                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                     th:src="${profile != null and profile.profilePicture != null}
+                         ? @{/profile/{userId}/image(userId=${profile.user.id})}
+                         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
                      alt="Profile Picture" />
             </a>
 
@@ -71,10 +73,13 @@
             <div class="post-author-container">
                 <a th:if="${post.user != null}"
                    th:href="@{'/profile/' + ${post.user.id}}">
-                <img class="profile-pic-placeholder"
-                     th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
-                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
-                     alt="Profile Picture" />
+
+                    <img class="profile-pic-placeholder"
+                         th:src="${profile != null and profile.profilePicture != null}
+                         ? @{/profile/{userId}/image(userId=${profile.user.id})}
+                         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                         alt="Profile Picture" />
+
                 </a>
                 <div class="post-meta">
                     <p class="post-author-text">
@@ -106,10 +111,11 @@
 <!--     if only 1 image uploaded then will follow css class image-grid single-image otherwise if more than 1 image then will follow css clas image-grid -->
         <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
              th:if="${post.images != null and !post.images.isEmpty()}">
+
             <div th:each="image, position : ${post.convertedImages}">
                 <input type="checkbox" th:id="${'image-toggle-' + post.id + '-' + position.index}" class="expand-image" />
                 <label th:for="${'image-toggle-' + post.id + '-' + position.index}" class="image-card">
-                    <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+                    <img th:src="@{'/posts/' + ${post.id} + '/images/' + ${position.index}}" alt="Post Image" class="grid-image" />
                 </label>
             </div>
         </div>
