@@ -14,7 +14,9 @@
 
   <h2>
     <img class="profile-pic-placeholder"
-         th:src="${otherUserProfile != null && otherUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${otherUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+         th:src="${otherUserProfile != null && otherUserProfile.profilePicture != null}
+        ? @{/profile/{userId}/image(userId=${otherUser.id})}
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
          alt="Profile Picture" />
     <a th:href="@{'/profile/' + ${otherUserProfile.user.id}}"
        class="chat-header-link" th:text="'Conversation with ' + ${otherUser.name}"></a>
@@ -25,9 +27,13 @@
          th:class="${message.sender.id == currentUserId} ? 'message-bubble sent' : 'message-bubble received'">
       <div class="message-header-info">
         <img class="profile-pic-placeholder"
-             th:src="${message.sender.id == currentUserId} ?
-             (${currentUserProfile != null && currentUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${currentUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10') :
-             (${otherUserProfile != null && otherUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${otherUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10')"
+             th:src="${message.sender.id == currentUserId
+        ? (currentUserProfile != null && currentUserProfile.profilePicture != null
+            ? '/profile/' + currentUserId + '/image'
+            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10')
+        : (otherUserProfile != null && otherUserProfile.profilePicture != null
+            ? '/profile/' + otherUser.id + '/image'
+            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10')}"
              alt="Profile Picture" />
         <span class="message-sender" th:text="${message.sender.name}"></span>
       </div>

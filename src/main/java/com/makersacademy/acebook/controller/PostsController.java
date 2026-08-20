@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 import java.io.IOException;
@@ -170,6 +172,28 @@ public class PostsController {
         model.addAttribute("currentUserFriendIds", friendIds);
 
         return "posts/show";
+    }
+
+    @GetMapping("/posts/{postId}/images/{imageIndex}")
+    @ResponseBody
+    public ResponseEntity<byte[]> getPostImage(
+            @PathVariable Long postId,
+            @PathVariable int imageIndex) {
+
+        Post post = repository.findById(postId).orElseThrow();
+
+        List<String> images = post.getConvertedImages();
+
+        if (imageIndex < 0 || imageIndex >= images.size()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] imageBytes = Base64.getDecoder().decode(images.get(imageIndex));
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
     }
 
     @PostMapping("/posts/{postId}/delete")

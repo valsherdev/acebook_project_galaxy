@@ -15,8 +15,9 @@
 
     <div class="profile-header">
         <img class="profile-pic-placeholder"
-             th:src="${profile != null and profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${profile.convertImageByteToString()} :
-                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+             th:src="${profile != null and profile.profilePicture != null}
+                ? @{/profile/{userId}/image(userId=${profile.user.id})}
+                : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
              alt="Profile Picture"/>
 
         <h2>
@@ -72,8 +73,9 @@
                 <a th:if="${post.user != null}"
                    th:href="@{'/profile/' + ${post.user.id}}">
                     <img class="profile-pic-placeholder"
-                         th:src="${post.user != null and post.user.profile != null and post.user.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${post.user.profile.convertImageByteToString()} :
-                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+                         th:src="${post.user != null and post.user.profile != null and post.user.profile.profilePicture != null}
+                            ? @{/profile/{userId}/image(userId=${post.user.id})}
+                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
                          alt="Profile Picture" />
                 </a>
                 <div class="post-meta">
@@ -95,7 +97,7 @@
                 <div th:each="image, position : ${post.convertedImages}">
                     <input type="checkbox" th:id="${'image-toggle-' + post.id + '-' + position.index}" class="expand-image" />
                     <label th:for="${'image-toggle-' + post.id + '-' + position.index}" class="image-card">
-                        <img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="Post Image" class="grid-image" />
+                        <img th:src="@{'/posts/' + ${post.id} + '/images/' + ${position.index}}" alt="Post Image" class="grid-image" />
                     </label>
                 </div>
             </div>
