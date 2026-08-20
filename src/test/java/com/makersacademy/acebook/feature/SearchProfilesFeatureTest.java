@@ -5,7 +5,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,6 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -239,5 +242,32 @@ public class SearchProfilesFeatureTest {
         String pageText = driver.findElement(By.tagName("body")).getText();
         assertTrue(pageText.contains("Jane Johnson"));
         assertTrue(pageText.contains("janesmith@email.com"));
+    }
+
+    @Test
+    public void userClicksSearchWithoutTypingBringsUpRequiredMessage() {
+        String myEmail = faker.name().username() + "@email.com";
+
+        driver.get("http://localhost:" + port + "/");
+        driver.findElement(By.linkText("Sign up")).click();
+        driver.findElement(By.name("email")).sendKeys(myEmail);
+        driver.findElement(By.name("password")).sendKeys("P@55qw0rd");
+        driver.findElement(By.name("action")).click();
+
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("greeting")));
+
+        WebElement searchInput = driver.findElement(By.xpath("//html/body/div[1]/nav/form/input"));
+
+        driver.findElement(By.cssSelector("form.search-box button")).click();
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        Boolean isInvalid = (Boolean) js.executeScript("return !arguments[0].checkValidity();", searchInput);
+        assertTrue(isInvalid, "Expected search input to fail form validation");
+
+        String validationMessage = (String) js.executeScript("return arguments[0].validationMessage;", searchInput);
+        assertEquals("Please fill in this field.", validationMessage);
+
     }
 }
