@@ -53,6 +53,9 @@ public class SearchProfilesFeatureTest {
 
     @AfterEach
     public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
         jdbcTemplate.execute("DELETE FROM friendships");
         jdbcTemplate.execute("DELETE FROM posts");
         jdbcTemplate.execute("DELETE FROM profiles");
