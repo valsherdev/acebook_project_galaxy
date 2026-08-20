@@ -125,7 +125,7 @@ public class PostsController {
                     hasImage = true;
 
                     byte[] compressedImage =
-                            imageService.compressImage(file.getBytes());
+                            imageService.compressImage(file);
                     String encodedImage =
                             Base64.getEncoder()
                                     .encodeToString(compressedImage);
@@ -195,18 +195,23 @@ public class PostsController {
 
         Post post = repository.findById(postId).orElseThrow();
 
-        List<String> images = post.getConvertedImages();
+        String encodedImage = post.getImage(imageIndex);
 
-        if (imageIndex < 0 || imageIndex >= images.size()) {
+        if (encodedImage == null) {
             return ResponseEntity.notFound().build();
         }
 
-        byte[] imageBytes = Base64.getDecoder().decode(images.get(imageIndex));
+        try {
+            byte[] imageBytes = Base64.getDecoder().decode(encodedImage);
 
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageBytes);
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageBytes);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/posts/{postId}/delete")

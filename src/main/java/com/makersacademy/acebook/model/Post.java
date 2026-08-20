@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -34,14 +33,6 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String images;
 
-    public int getImageCount() {
-        if (images == null || images.isBlank()) {
-            return 0;
-        }
-
-        return images.split(",").length;
-    }
-
     public Post() {}
 
     public Post(String content, User user, String images) {
@@ -50,6 +41,28 @@ public class Post {
         this.user = user;
         this.createdAt = LocalDateTime.now();
         this.images = images;
+    }
+
+    public int getImageCount() {
+        if (images == null || images.isBlank()) {
+            return 0;
+        }
+
+        return images.split(",").length;
+    }
+
+    public String getImage(int imageIndex) {
+        if (images == null || images.isBlank()) {
+            return null;
+        }
+
+        String[] imageArray = images.split(",");
+
+        if (imageIndex < 0 || imageIndex >= imageArray.length) {
+            return null;
+        }
+
+        return imageArray[imageIndex];
     }
 
 }

@@ -6,6 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -60,7 +63,6 @@ public class ImageService {
                 int width = reader.getWidth(0);
                 int height = reader.getHeight(0);
 
-                // Protect Render/JVM from enormous images
                 if (width > MAX_INPUT_WIDTH || height > MAX_INPUT_HEIGHT) {
                     throw new IOException(
                             "Image dimensions are too large. Maximum is "
@@ -114,12 +116,34 @@ public class ImageService {
                 );
 
                 graphics.dispose();
-
                 ByteArrayOutputStream output =
                         new ByteArrayOutputStream();
 
-                ImageIO.write(resized, "jpg", output);
+                Iterator<ImageWriter> writers =
+                        ImageIO.getImageWritersByFormatName("jpg");
 
+                if (!writers.hasNext()) {
+                    throw new IOException("No JPEG writer available");
+                }
+
+                ImageWriter writer = writers.next();
+
+                try {
+                    ImageWriteParam writeParam = writer.getDefaultWriteParam();
+                    writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                    writeParam.setCompressionQuality(JPEG_QUALITY);
+
+                    try (ImageOutputStream imageOutputStream =
+                                 ImageIO.createImageOutputStream(output)) {
+
+                        writer.setOutput(imageOutputStream);
+                        writer.write(null,
+                                new javax.imageio.IIOImage(resized, null, null),
+                                writeParam);
+                    }
+                } finally {
+                    writer.dispose();
+                }
                 return output.toByteArray();
 
             } finally {
