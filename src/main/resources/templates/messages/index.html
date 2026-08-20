@@ -19,7 +19,9 @@
          class="conversation-row">
       <a th:href="@{'/messages/' + ${partner.id} + '#bottom-anchor'}" class="conversation-link">
       <img class="profile-pic-placeholder"
-           th:src="${partner.profile != null && partner.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${partner.profile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+           th:src="${partner.profile != null && partner.profile.profilePicture != null}
+        ? @{/profile/{userId}/image(userId=${partner.id})}
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
            alt="Profile Picture" />
         <span class="conversation-name" th:text="${partner.name}"></span>
         <span class="conversation-preview" th:text="${message.content}"></span>
