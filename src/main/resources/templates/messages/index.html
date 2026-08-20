@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/main.css" />
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" class="chat-wrapper">
 
   <h2>Messages</h2>
 
@@ -17,7 +17,10 @@
          th:with="partner=${message.sender.id == currentUserId} ? ${message.recipient} : ${message.sender},
                       unreadCount=${unreadCountByPartnerId.get(partner.id)}"
          class="conversation-row">
-      <a th:href="@{'/messages/' + ${partner.id}}" class="conversation-link">
+      <a th:href="@{'/messages/' + ${partner.id} + '#bottom-anchor'}" class="conversation-link">
+      <img class="profile-pic-placeholder"
+           th:src="${partner.profile != null && partner.profile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${partner.profile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+           alt="Profile Picture" />
         <span class="conversation-name" th:text="${partner.name}"></span>
         <span class="conversation-preview" th:text="${message.content}"></span>
         <span class="conversation-timestamp"

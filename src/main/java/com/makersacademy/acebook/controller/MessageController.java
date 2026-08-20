@@ -2,8 +2,10 @@ package com.makersacademy.acebook.controller;
 
 
 import com.makersacademy.acebook.model.Message;
+import com.makersacademy.acebook.model.Profile;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.MessageRepository;
+import com.makersacademy.acebook.repository.ProfileRepository;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +30,9 @@ public class MessageController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
 
     @GetMapping("/messages")
     public String index(Model model) {
@@ -60,6 +65,12 @@ public class MessageController {
 
         List<Message> conversation = messageRepository.findConversation(currentUser.getId(), userId);
         messageRepository.markThreadAsRead(currentUser.getId(), userId);
+
+        Profile currentUserProfile = profileRepository.findByUser(currentUser).orElse(null);
+        model.addAttribute("currentUserProfile", currentUserProfile);
+
+        Profile otherUserProfile = profileRepository.findByUser(otherUser).orElse(null);
+        model.addAttribute("otherUserProfile", otherUserProfile);
 
         model.addAttribute("otherUser", otherUser);
         model.addAttribute("messages", conversation);
