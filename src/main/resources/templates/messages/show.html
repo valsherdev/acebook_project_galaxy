@@ -16,7 +16,8 @@
     <img class="profile-pic-placeholder"
          th:src="${otherUserProfile != null && otherUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${otherUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
          alt="Profile Picture" />
-    <span th:text="'Conversation with ' + ${otherUser.name}"></span>
+    <a th:href="@{'/profile/' + ${otherUserProfile.user.id}}"
+       class="chat-header-link" th:text="'Conversation with ' + ${otherUser.name}"></a>
   </h2>
 
   <div class="message-thread">

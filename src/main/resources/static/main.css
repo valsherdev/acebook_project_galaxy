@@ -553,6 +553,8 @@ a.back-link {
 
 .post-friend-action {
     margin-left: auto;
+    display: flex;
+    gap: 10px;
 }
 
 .pending-label {
@@ -851,6 +853,10 @@ a.back-link {
 
 .conversation-name {
     font-weight: 600;
+}
+
+.chat-header-link {
+    color: #2e1b57;
 }
 
 .conversation-timestamp {
