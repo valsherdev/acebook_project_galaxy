@@ -8,22 +8,38 @@
   <link rel="stylesheet" href="/main.css" />
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" class="chat-wrapper">
 
-  <a th:href="@{/messages}">&larr; Back to messages</a>
-  <h2 th:text="'Conversation with ' + ${otherUser.name}"></h2>
+  <a th:href="@{/messages}" class="back-link">&larr; Back to messages</a>
+
+  <h2>
+    <img class="profile-pic-placeholder"
+         th:src="${otherUserProfile != null && otherUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${otherUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+         alt="Profile Picture" />
+    <a th:href="@{'/profile/' + ${otherUserProfile.user.id}}"
+       class="chat-header-link" th:text="'Conversation with ' + ${otherUser.name}"></a>
+  </h2>
 
   <div class="message-thread">
     <div th:each="message : ${messages}"
          th:class="${message.sender.id == currentUserId} ? 'message-bubble sent' : 'message-bubble received'">
-      <span class="message-sender" th:text="${message.sender.name}"></span>
+      <div class="message-header-info">
+        <img class="profile-pic-placeholder"
+             th:src="${message.sender.id == currentUserId} ?
+             (${currentUserProfile != null && currentUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${currentUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10') :
+             (${otherUserProfile != null && otherUserProfile.profilePicture != null} ? 'data:image/jpeg;base64,' + ${otherUserProfile.convertImageByteToString()} : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10')"
+             alt="Profile Picture" />
+        <span class="message-sender" th:text="${message.sender.name}"></span>
+      </div>
       <span th:text="${message.content}"></span>
       <span class="message-timestamp" th:text="${#temporals.format(message.createdAt, 'dd MMM, HH:mm')}"></span>
     </div>
     <p th:if="${messages.isEmpty()}">No messages yet - say hello!</p>
+
+    <div id="bottom-anchor"></div>
   </div>
 
-  <form th:action="@{'/messages/' + ${otherUser.id}}" method="post">
+  <form class="comment-form" th:action="@{'/messages/' + ${otherUser.id} + '#bottom-anchor'}" method="post">
     <input type="text" name="content" placeholder="Write a message..." required/>
     <button type="submit">Send</button>
   </form>
