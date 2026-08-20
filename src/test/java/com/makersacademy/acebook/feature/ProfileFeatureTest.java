@@ -251,7 +251,8 @@ public class ProfileFeatureTest {
         WebElement profileImage = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("img.profile-pic-placeholder")));
 
         String imgSrc = profileImage.getAttribute("src");
-        assertTrue(imgSrc.contains("data:image/") || imgSrc.contains("http"));
+        assertTrue(imgSrc.contains("/profile/"));
+        assertTrue(imgSrc.endsWith("/image"));
         }
 
     // When a user makes a post and also uploads a profile picture, their profile picture will show on their
@@ -280,7 +281,11 @@ public class ProfileFeatureTest {
         driver.get("http://localhost:8081/profile");
 
         WebElement profileImage = driver.findElement(By.cssSelector("img.profile-pic-placeholder"));
-        assertThat(profileImage.getAttribute("src"), containsString("data:image/"));
+
+        String profileImgSrc = profileImage.getAttribute("src");
+
+        assertThat(profileImgSrc, containsString("/profile/"));
+        assertThat(profileImgSrc, containsString("/image"));
 
         driver.get("http://localhost:8081/posts");
 
@@ -290,7 +295,8 @@ public class ProfileFeatureTest {
         WebElement postProfileImage = driver.findElement(By.cssSelector("li.post-box img.profile-pic-placeholder"));
 
         String postImgSrc = postProfileImage.getAttribute("src");
-        assertTrue(postImgSrc.contains("data:image/") || postImgSrc.contains("http"));
+        assertThat(postImgSrc, containsString("/profile/"));
+        assertThat(postImgSrc, containsString("/image"));
     }
 
 }
