@@ -108,7 +108,7 @@
                 </div>
             </div>
 
-            <div class="like-reload" th:id="${'post-' + post.id}">
+            <div class="like-reload" th:id="${'likes-post-' + post.id}">
                 <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
                     <button type="submit">❤️</button>
                     <span th:text="${post.likes.size()} + ' likes'"></span>
