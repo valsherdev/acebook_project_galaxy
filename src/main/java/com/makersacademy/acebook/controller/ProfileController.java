@@ -24,8 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
-import net.coobird.thumbnailator.Thumbnails;
-import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import org.springframework.web.servlet.view.RedirectView;
 import java.util.ArrayList;
