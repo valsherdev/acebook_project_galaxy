@@ -17,12 +17,17 @@
     <h2>Search results for profiles:</h2>
     <div class="profile-list">
       <div th:each="profile : ${profiles}">
+        <img class="profile-pic-placeholder"
+             th:src="${profile.user != null && profile.profilePicture != null}
+         ? @{/profile/{userId}/image(userId=${profile.user.id})}
+         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+             alt="Profile Picture" />
         <strong th:if="${profile.firstName != null}"
                 th:text="${profile.firstName + ' ' + profile.lastName}">Found name</strong>
 
         <a th:href="@{/profile/{id}(id=${profile.user.id})}">View profile</a>
         </div>
-      </div>
+    </div>
     </div>
 
   <br>
@@ -32,6 +37,11 @@
     <h2>Search results for email address:</h2>
     <div class="profile-list">
       <div th:each="user : ${users}">
+        <img class="profile-pic-placeholder"
+             th:src="${user.profile != null && user.profile.profilePicture != null}
+        ? @{/profile/{userId}/image(userId=${user.id})}
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
+             alt="Profile Picture" />
         <strong th:text="${user.profile != null and user.profile.firstName != null and (#strings.containsIgnoreCase(user.profile.firstName, searchQuery)
                 or (user.profile.lastName != null and #strings.containsIgnoreCase(user.profile.lastName, searchQuery))) ?
                 (user.profile.firstName + (user.profile.lastName != null ? ' ' + user.profile.lastName : '')) : user.username}"></strong>

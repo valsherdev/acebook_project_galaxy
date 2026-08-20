@@ -999,3 +999,21 @@ a:active {
     background-color: #e5e7eb;
     color: #1f2937;
 }
+
+.profile-list > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #ffffff;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #312aa35c;
+    border-radius: 8px;
+}
+
+.profile-list img.profile-pic-placeholder {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
