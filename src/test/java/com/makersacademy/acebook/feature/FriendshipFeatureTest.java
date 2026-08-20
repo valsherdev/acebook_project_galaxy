@@ -95,7 +95,6 @@ public class FriendshipFeatureTest {
         Long myId = currentUserId(myEmail);
 
         String friendUsername = faker.name().username() + "@email.com";
-        jdbcTemplate.update("INSERT INTO users (username, enabled) VALUES (?, true)", friendUsername);
         Long friendId = insertUser(friendUsername);
 
         jdbcTemplate.update(
@@ -115,14 +114,15 @@ public class FriendshipFeatureTest {
 
     @Test
     public void userSeesOutgoingRequestAsPendingAfterSending() {
-        String myEmail = faker.name().username() + "@email.com";
 
+        String myEmail = faker.name().username() + "@email.com";
         signUp(myEmail);
 
         String otherUsername = faker.name().username() + "@email.com";
         insertUser(otherUsername);
 
-        var count = jdbcTemplate.queryForObject("SELECT count(*) FROM users", Integer.class);
+        var count = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM users WHERE username IN (?, ?)", Integer.class, myEmail, otherUsername);
         assertEquals(2, count);
 
         driver.get("http://localhost:8081/friends");
@@ -131,10 +131,13 @@ public class FriendshipFeatureTest {
 
         driver.findElement(By.cssSelector("form[action='/friends/add'] button[type='submit']")).click();
 
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "Pending"));
+
         String afterSend = driver.findElement(By.tagName("body")).getText();
 
         assertTrue(afterSend.contains("Pending"));
         assertTrue(afterSend.contains(otherUsername));
+
     }
 
     @Test
@@ -255,7 +258,8 @@ public class FriendshipFeatureTest {
         driver.get("http://localhost:8081/friends");
 
         driver.findElement(By.xpath(
-                "//span[text()='" + firstRequesterUsername + "']/following-sibling::form[contains(@action,'/accept')]//button"
+                "//a[contains(@class,'friend-username') and normalize-space(.)='" + firstRequesterUsername + "']" +
+                        "/following-sibling::form[contains(@action,'/accept')]//button"
         )).click();
 
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {

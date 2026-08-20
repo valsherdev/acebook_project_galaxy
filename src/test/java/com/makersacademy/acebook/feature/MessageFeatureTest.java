@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -107,9 +108,8 @@ public class MessageFeatureTest {
         Long myId = currentUserId(myEmail);
 
         driver.get("http://localhost:8081/messages/" + otherId);
-        driver.findElement(By.cssSelector("form[action='/messages/" + otherId + "'] input[name='content']")).sendKeys("Hello");
-        driver.findElement(By.cssSelector("form[action='/messages/" + otherId + "'] button[type='submit']")).click();
-
+        driver.findElement(By.cssSelector("form[action^='/messages/" + otherId + "'] input[name='content']")).sendKeys("Hey there!");
+        driver.findElement(By.cssSelector("form[action^='/messages/" + otherId + "'] button[type='submit']")).click();
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
                 assertEquals(1, messageCountBetween(myId, otherId)));
     }
@@ -122,8 +122,8 @@ public class MessageFeatureTest {
         signUp(myEmail);
 
         driver.get("http://localhost:8081/messages/" + otherId);
-        driver.findElement(By.cssSelector("form[action='/messages/" + otherId + "'] input[name='content']")).sendKeys("Hello");
-        driver.findElement(By.cssSelector("form[action='/messages/" + otherId + "'] button[type='submit']")).click();
+        driver.findElement(By.cssSelector("form[action^='/messages/" + otherId + "'] input[name='content']")).sendKeys("Hello");
+        driver.findElement(By.cssSelector("form[action^='/messages/" + otherId + "'] button[type='submit']")).click();
 
         wait.until(ExpectedConditions.textToBePresentInElementLocated(
                 By.tagName("body"), "Hello"));
@@ -144,8 +144,8 @@ public class MessageFeatureTest {
         insertMessage(otherId, myId, "first message", Timestamp.valueOf("2026-01-01 09:00:00"));
 
         driver.get("http://localhost:8081/messages/" + otherId);
-        driver.findElement(By.cssSelector("form[action='/messages/" + otherId + "'] input[name='content']")).sendKeys("second message");
-        driver.findElement(By.cssSelector("form[action='/messages/" + otherId + "'] button[type='submit']")).click();
+        driver.findElement(By.cssSelector("form[action^='/messages/" + otherId + "'] input[name='content']")).sendKeys("second message");
+        driver.findElement(By.cssSelector("form[action^='/messages/" + otherId + "'] button[type='submit']")).click();
 
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "second message"));
 
@@ -193,4 +193,114 @@ public class MessageFeatureTest {
 
         assertEquals(1, unreadCountFor(myId, secondSenderId));
     }
+
+    @Test
+    public void inboxListsConversationWithLatestMessage() {
+        Long otherId = insertUser(faker.name().username() + "@email.com");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        insertMessage(otherId, myId, "older message", Timestamp.valueOf("2026-01-01 09:00:00"));
+        insertMessage(myId, otherId, "latest message", Timestamp.valueOf("2026-01-02 09:00:00"));
+
+        driver.get("http://localhost:8081/messages");
+        String pageText = driver.findElement(By.tagName("body")).getText();
+
+        assertTrue(pageText.contains("latest message"));
+        assertFalse(pageText.contains("older message"));
+    }
+
+    @Test
+    public void inboxShowsMostRecentConversationFirst() {
+        Long firstPartnerId = insertUser(faker.name().username() + "@email.com");
+        Long secondPartnerId = insertUser(faker.name().username() + "@email.com");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        insertMessage(firstPartnerId, myId, "older conversation", Timestamp.valueOf("2026-01-01 09:00:00"));
+        insertMessage(secondPartnerId, myId, "newer conversation", Timestamp.valueOf("2026-01-02 09:00:00"));
+
+        driver.get("http://localhost:8081/messages");
+        String pageText = driver.findElement(By.tagName("body")).getText();
+
+        int newerIndex = pageText.indexOf("newer conversation");
+        int olderIndex = pageText.indexOf("older conversation");
+
+        assertTrue(newerIndex >= 0 && olderIndex >= 0);
+        assertTrue(newerIndex < olderIndex);
+    }
+
+
+    @Test
+    public void inboxShowsUnreadBadgeForConversationsWithUnreadMessages() {
+        Long otherId = insertUser(faker.name().username() + "@email.com");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        insertMessage(otherId, myId, "unread one", Timestamp.valueOf("2026-01-01 09:00:00"));
+        insertMessage(otherId, myId, "unread two", Timestamp.valueOf("2026-01-02 09:00:00"));
+
+        driver.get("http://localhost:8081/messages");
+        WebElement badge = driver.findElement(By.cssSelector(".conversation-unread-badge"));
+        assertEquals("2", badge.getText().trim());
+    }
+
+    @Test
+    public void inboxDoesNotShowUnreadBadgeAfterThreadIsOpened() {
+        Long otherId = insertUser(faker.name().username() + "@email.com");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        insertMessage(otherId, myId, "hello", Timestamp.valueOf("2026-01-01 09:00:00"));
+
+        driver.get("http://localhost:8081/messages/" + otherId);
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+                assertEquals(0, unreadCountFor(myId, otherId)));
+
+        driver.get("http://localhost:8081/messages");
+        assertTrue(driver.findElements(By.cssSelector(".conversation-unread-badge")).isEmpty());
+    }
+
+    @Test
+    public void navBarShowsUnreadCount() {
+        Long otherId = insertUser(faker.name().username() + "@email.com");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        insertMessage(otherId, myId, "hello", Timestamp.valueOf("2026-01-01 09:00:00"));
+
+        driver.get("http://localhost:8081/posts");
+        String navBarText = driver.findElement(By.cssSelector(".navbar")).getText();
+        assertTrue(navBarText.contains("Messages (1)"));
+    }
+
+    @Test
+    public void navBarUnreadCountClearsAfterOpeningThread() {
+        Long otherId = insertUser(faker.name().username() + "@email.com");
+
+        String myEmail = faker.name().username() + "@email.com";
+        signUp(myEmail);
+        Long myId = currentUserId(myEmail);
+
+        insertMessage(otherId, myId, "hello", Timestamp.valueOf("2026-01-01 09:00:00"));
+
+        driver.get("http://localhost:8081/messages/" + otherId);
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+                assertEquals(0, unreadCountFor(myId, otherId)));
+
+        driver.get("http://localhost:8081/posts");
+        String navBarText = driver.findElement(By.cssSelector(".navbar")).getText();
+        assertFalse(navBarText.contains("Messages ("));
+    }
+
 }
