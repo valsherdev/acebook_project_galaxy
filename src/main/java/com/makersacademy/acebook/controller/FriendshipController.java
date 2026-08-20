@@ -5,6 +5,7 @@ import com.makersacademy.acebook.model.Notification;
 import com.makersacademy.acebook.model.User;
 import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.NotificationRepository;
+import com.makersacademy.acebook.service.ImageService;
 import com.makersacademy.acebook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
