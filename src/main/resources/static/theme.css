@@ -88,12 +88,11 @@ h1 {
     color: #ffffff;
 }
 
-/* logout link */
 .sign-in-greeting a {
     display: inline-block !important;
     text-decoration: none;
     background: #32216a;
-    color: #ffffff; /* Clean professional red tone for logout */
+    color: #ffffff;
     font-weight: 600;
     padding: 0.2rem 0.5rem;
     border-radius: 10px;
