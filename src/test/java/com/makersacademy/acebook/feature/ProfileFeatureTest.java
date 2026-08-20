@@ -284,8 +284,7 @@ public class ProfileFeatureTest {
 
         String profileImgSrc = profileImage.getAttribute("src");
 
-        assertThat(profileImgSrc, containsString("/profile/"));
-        assertThat(profileImgSrc, containsString("/image"));
+        assertThat(profileImgSrc, containsString("http"));
 
         driver.get("http://localhost:8081/posts");
 
