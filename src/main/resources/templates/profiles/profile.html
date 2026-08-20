@@ -32,6 +32,8 @@
             </form>
             <span class="friends-label" th:if="${currentUserFriendIds.contains(profile.user.id)}">Friends</span>
             <span class="pending-label" th:if="${currentUserPendingIds.contains(profile.user.id)}">Request sent</span>
+
+            <a th:href="@{'/messages/' + ${profile.user.id} + '#bottom-anchor'}" class="friend-btn message-btn">Message</a>
         </div>
 
     </div>
