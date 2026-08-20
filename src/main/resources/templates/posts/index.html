@@ -24,7 +24,14 @@
                      alt="Profile Picture" />
             </a>
 
-            <input type="text" th:field="*{content}" placeholder="What's on your mind?"/>
+            <div class="post-input-container">
+            <input type="text" th:field="*{content}" class="post-input-field" placeholder="What's on your mind?"/>
+
+                <label class="image-upload-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />
+                    <input type="file" name="imageFiles" multiple />
+                </label>
+            </div>
             </div>
 <!--            <label class="image-upload-icon">-->
 <!--                <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />-->
@@ -32,10 +39,6 @@
 <!--            </label>-->
 
             <div class="post-form-actions">
-                <label class="image-upload-icon">
-                    <img src="https://cdn-icons-png.flaticon.com/128/16878/16878840.png" alt="Upload Icon" class="upload-icon-img" />
-                    <input type="file" name="imageFiles" multiple />
-                </label>
                     <input type="submit" value="Submit" />
                     <input type="reset" value="Reset" />
             </div>
