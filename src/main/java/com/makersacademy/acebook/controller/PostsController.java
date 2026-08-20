@@ -26,17 +26,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.ByteArrayOutputStream;
 
 import java.util.*;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
 
 @Controller
 public class PostsController {
@@ -110,49 +108,42 @@ public class PostsController {
     @PostMapping("/posts")
     public RedirectView create(
             @ModelAttribute Post post,
-            @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles
-    ) throws IOException {
-
+            @RequestParam(value = "imageFiles", required = false)
+            List<MultipartFile> imageFiles
+    ) {
         boolean hasContent =
                 post.getContent() != null &&
                         !post.getContent().isBlank();
-
         boolean hasImage = false;
-
         List<String> encodedImages = new ArrayList<>();
-
-        if (imageFiles != null) {
-            for (MultipartFile file : imageFiles) {
-
-                if (file != null && !file.isEmpty()) {
-
+        try {
+            if (imageFiles != null) {
+                for (MultipartFile file : imageFiles) {
+                    if (file == null || file.isEmpty()) {
+                        continue;
+                    }
                     hasImage = true;
 
                     byte[] compressedImage =
                             imageService.compressImage(file.getBytes());
-
                     String encodedImage =
-                            java.util.Base64.getEncoder()
+                            Base64.getEncoder()
                                     .encodeToString(compressedImage);
-
                     encodedImages.add(encodedImage);
                 }
             }
+        } catch (IOException | RuntimeException e) {
+            return new RedirectView("/posts?imageError=true");
         }
-
         if (!hasContent && !hasImage) {
             return new RedirectView("/posts");
         }
-
         if (hasImage) {
             post.setImages(String.join(",", encodedImages));
         }
-
         User currentUser = getCurrentUser();
         post.setUser(currentUser);
-
         repository.save(post);
-
         return new RedirectView("/posts");
     }
 
@@ -258,19 +249,6 @@ public class PostsController {
                 .getPrincipal();
         String username = (String) principal.getAttributes().get("email");
         return userRepository.findUserByUsername(username).orElseThrow();
-    }
-
-    private byte[] compressImage(MultipartFile file) throws IOException {
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        Thumbnails.of(file.getInputStream())
-                .size(1200, 1200)
-                .outputFormat("jpg")
-                .outputQuality(0.7)
-                .toOutputStream(outputStream);
-
-        return outputStream.toByteArray();
     }
 
     @GetMapping("/games/snake")

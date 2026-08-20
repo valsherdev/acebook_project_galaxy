@@ -31,18 +31,15 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Like> likes;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String images;
 
-    public List<String> getConvertedImages() {
-        List<String> convertedImages = new ArrayList<>();
-        if (this.images != null && !this.images.isBlank()) {
-            for (String image : this.images.split(",")) {
-                if (!image.isBlank()) {
-                    convertedImages.add(image);
-                }
-            }
-        } return convertedImages;
+    public int getImageCount() {
+        if (images == null || images.isBlank()) {
+            return 0;
+        }
+
+        return images.split(",").length;
     }
 
     public Post() {}

@@ -79,32 +79,35 @@ public class ProfileController {
 
 
     @PostMapping("/profile/edit")
-    public String updateProfileDetails(@ModelAttribute("profile") Profile profileForm,
-                                       @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
-        User currentUser = getCurrentUser();
-        Profile profile = profileRepository.findByUser(currentUser)
-                .orElseGet(() -> {
-                    Profile newProfile = new Profile();
-                    newProfile.setUser(currentUser);
-                    return newProfile;
-                });
+    public String updateProfileDetails(
+            @ModelAttribute("profile") Profile profileForm,
+            @RequestParam(value = "imageFile", required = false)
+            MultipartFile imageFile
+    ) {
+        try {
+            User currentUser = getCurrentUser();
+            Profile profile = profileRepository.findByUser(currentUser)
+                    .orElseGet(() -> {
+                        Profile newProfile = new Profile();
+                        newProfile.setUser(currentUser);
+                        return newProfile;
+                    });
+            if (imageFile != null && !imageFile.isEmpty()) {
+                byte[] compressedImage =
+                        imageService.compressImage(imageFile);
+                profile.setProfilePicture(compressedImage);
+            }
+            profile.setFirstName(profileForm.getFirstName());
+            profile.setLastName(profileForm.getLastName());
+            profile.setCurrentLocation(profileForm.getCurrentLocation());
+            profile.setHometown(profileForm.getHometown());
+            profile.setAboutMe(profileForm.getAboutMe());
+            profileRepository.save(profile);
+            return "redirect:/profile";
 
-        if (imageFile != null && !imageFile.isEmpty()) {
-            byte[] compressedImage =
-                    imageService.compressImage(imageFile.getBytes());
-
-            profile.setProfilePicture(compressedImage);
+        } catch (IOException e) {
+            return "redirect:/profile/edit?imageError=true";
         }
-
-        profile.setFirstName(profileForm.getFirstName());
-        profile.setLastName(profileForm.getLastName());
-        profile.setCurrentLocation(profileForm.getCurrentLocation());
-        profile.setHometown(profileForm.getHometown());
-        profile.setAboutMe(profileForm.getAboutMe());
-        profileRepository.save(profile);
-
-        return "redirect:/profile";
-
     }
 
     @GetMapping("/profile/{userId}")
