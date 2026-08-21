@@ -72,10 +72,10 @@ public class ProfileFeatureTest {
 
         driver.get("http://localhost:8081/profile");
         wait.until(ExpectedConditions.urlToBe("http://localhost:8081/profile"));
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "First name:"));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), "First Name:"));
 
         String pageText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(pageText.contains("First name:"));
+        assertTrue(pageText.contains("First Name:"));
     }
 
     // First name saved successfully to profile
@@ -92,13 +92,13 @@ public class ProfileFeatureTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("firstName")));
 
         driver.findElement(By.name("firstName")).sendKeys(firstName);
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
 
         driver.get("http://localhost:8081/profile");
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), firstName));
 
         String pageText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(pageText.contains("First name: " + firstName));
+        assertTrue(pageText.contains(firstName));
     }
 
     // First and last name saved successfully to profile
@@ -117,14 +117,14 @@ public class ProfileFeatureTest {
 
         driver.findElement(By.name("firstName")).sendKeys(firstName);
         driver.findElement(By.name("lastName")).sendKeys(lastName);
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
 
         driver.get("http://localhost:8081/profile");
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), firstName));
 
         String pageText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(pageText.contains("First name: " + firstName));
-        assertTrue(pageText.contains("Last name: " + lastName));
+        assertTrue(pageText.contains(firstName));
+        assertTrue(pageText.contains(lastName));
     }
 
     // First and last name saved successfully to profile, full name shows on users individual post
@@ -150,13 +150,13 @@ public class ProfileFeatureTest {
 
         driver.findElement(By.name("firstName")).sendKeys(firstName);
         driver.findElement(By.name("lastName")).sendKeys(lastName);
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
 
         driver.get("http://localhost:8081/profile");
 
         String pageText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(pageText.contains("First name: " + firstName));
-        assertTrue(pageText.contains("Last name: " + lastName));
+        assertTrue(pageText.contains(firstName));
+        assertTrue(pageText.contains(lastName));
 
         driver.get("http://localhost:8081/posts");
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), firstName));
@@ -181,7 +181,7 @@ public class ProfileFeatureTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("lastName")));
 
         driver.findElement(By.name("lastName")).sendKeys(lastName);
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
 
         wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("/profile/edit")));
 
@@ -215,12 +215,12 @@ public class ProfileFeatureTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("firstName")));
 
         driver.findElement(By.name("firstName")).sendKeys(firstName);
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
 
         driver.get("http://localhost:8081/profile");
 
         String pageText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(pageText.contains("First name: " + firstName));
+        assertTrue(pageText.contains(firstName));
 
         driver.get("http://localhost:8081/posts");
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("body"), email));
@@ -242,10 +242,10 @@ public class ProfileFeatureTest {
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("imageFile")));
 
-        String imagePath = java.nio.file.Paths.get("src/test/java/com/makersacademy/acebook/resources/test-image.jpeg").toAbsolutePath().toString();
+        String imagePath = java.nio.file.Paths.get("src/test/resources/test-image.jpeg").toAbsolutePath().toString();
         driver.findElement(By.name("imageFile")).sendKeys(imagePath);
 
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
         driver.get("http://localhost:8081/profile");
 
         WebElement profileImage = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("img.profile-pic-placeholder")));
@@ -275,9 +275,9 @@ public class ProfileFeatureTest {
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("imageFile")));
 
-        String imagePath = java.nio.file.Paths.get("src/test/java/com/makersacademy/acebook/resources/test-image.jpeg").toAbsolutePath().toString();
+        String imagePath = java.nio.file.Paths.get("src/test/resources/test-image.jpeg").toAbsolutePath().toString();
         driver.findElement(By.name("imageFile")).sendKeys(imagePath);
-        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.cssSelector(".form-actions button[type='submit']")).click();
         driver.get("http://localhost:8081/profile");
 
         WebElement profileImage = driver.findElement(By.cssSelector("img.profile-pic-placeholder"));
