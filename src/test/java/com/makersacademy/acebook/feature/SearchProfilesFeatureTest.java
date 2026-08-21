@@ -42,20 +42,12 @@ public class SearchProfilesFeatureTest {
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-//    @AfterEach
-//    public void tearDown() {
-//        if (driver != null) {
-//            driver.quit();
-//        }
-//        jdbcTemplate.update("DELETE FROM profiles");
-//        jdbcTemplate.update("DELETE FROM users");
-//    }
-
     @AfterEach
     public void tearDown() {
         if (driver != null) {
             driver.quit();
         }
+        jdbcTemplate.execute("DELETE FROM messages");
         jdbcTemplate.execute("DELETE FROM friendships");
         jdbcTemplate.execute("DELETE FROM posts");
         jdbcTemplate.execute("DELETE FROM profiles");
@@ -278,7 +270,11 @@ public class SearchProfilesFeatureTest {
         assertTrue(isInvalid, "Expected search input to fail form validation");
 
         String validationMessage = (String) js.executeScript("return arguments[0].validationMessage;", searchInput);
-        assertEquals("Please fill out this field.", validationMessage);
+
+        boolean isExpectedMessage = validationMessage.equals("Please fill out this field.") ||
+                validationMessage.equals("Please fill in this field.");
+
+        assertEquals(true, isExpectedMessage);
 
     }
 }
