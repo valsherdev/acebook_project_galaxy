@@ -270,6 +270,7 @@ public class SearchProfilesFeatureTest {
         assertTrue(isInvalid, "Expected search input to fail form validation");
 
         String validationMessage = (String) js.executeScript("return arguments[0].validationMessage;", searchInput);
+//        assertEquals("Please fill in this field.", validationMessage);
 
         boolean isExpectedMessage = validationMessage.equals("Please fill out this field.") ||
                 validationMessage.equals("Please fill in this field.");

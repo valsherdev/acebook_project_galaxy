@@ -22,8 +22,8 @@
          ? @{/profile/{userId}/image(userId=${profile.user.id})}
          : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
              alt="Profile Picture" />
-        <strong th:if="${profile.firstName != null}"
-                th:text="${profile.firstName + ' ' + profile.lastName}">Found name</strong>
+        <strong th:if="${profile.firstName != null and !#strings.isEmpty(profile.firstName)}"
+                th:text="${profile.firstName + (profile.lastName != null ? ' ' + profile.lastName : '')}">Found name</strong>
 
         <a th:href="@{/profile/{id}(id=${profile.user.id})}">View profile</a>
         </div>
@@ -42,9 +42,7 @@
         ? @{/profile/{userId}/image(userId=${user.id})}
         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsYYYmIOuieWvw2LUapfA7Catq3e-NyzpWMPjVoZ32pQ&s=10'"
              alt="Profile Picture" />
-        <strong th:text="${user.profile != null and user.profile.firstName != null and (#strings.containsIgnoreCase(user.profile.firstName, searchQuery)
-                or (user.profile.lastName != null and #strings.containsIgnoreCase(user.profile.lastName, searchQuery))) ?
-                (user.profile.firstName + (user.profile.lastName != null ? ' ' + user.profile.lastName : '')) : user.username}"></strong>
+        <strong th:text="${user.username}"></strong>
 
         <a th:href="@{/profile/{id}(id=${user.id})}">View profile</a>
 
