@@ -93,17 +93,22 @@
             </div>
             <p th:text="${post.content}"></p>
 
-            <div th:class="${post.convertedImages.size() == 1} ? 'image-grid single-image' : 'image-grid'"
-                 th:if="${post.images != null and !post.images.isEmpty()}">
-                <div th:each="image, position : ${post.convertedImages}">
-                    <input type="checkbox" th:id="${'image-toggle-' + post.id + '-' + position.index}" class="expand-image" />
-                    <label th:for="${'image-toggle-' + post.id + '-' + position.index}" class="image-card">
-                        <img th:src="@{'/posts/' + ${post.id} + '/images/' + ${position.index}}" alt="Post Image" class="grid-image" />
+            <div th:if="${post.imageCount > 0}"
+                 th:class="${post.imageCount == 1} ? 'image-grid single-image' : 'image-grid'">
+                <div th:each="imageIndex : ${#numbers.sequence(0, post.imageCount - 1)}">
+                    <input type="checkbox"
+                           th:id="${'image-toggle-' + post.id + '-' + imageIndex}"
+                           class="expand-image" />
+                    <label th:for="${'image-toggle-' + post.id + '-' + imageIndex}"
+                           class="image-card">
+                        <img th:src="@{'/posts/' + ${post.id} + '/images/' + ${imageIndex}}"
+                             alt="Post Image"
+                             class="grid-image" />
                     </label>
                 </div>
             </div>
 
-            <div class="like-reload" th:id="${'post-' + post.id}">
+            <div class="like-reload" th:id="${'likes-post-' + post.id}">
                 <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post">
                     <button type="submit">❤️</button>
                     <span th:text="${post.likes.size()} + ' likes'"></span>

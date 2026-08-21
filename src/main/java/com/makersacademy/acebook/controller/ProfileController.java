@@ -8,6 +8,7 @@ import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.ProfileRepository;
 import com.makersacademy.acebook.repository.UserRepository;
+import com.makersacademy.acebook.service.ImageService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,10 +24,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.util.Collections;
 import org.springframework.web.servlet.view.RedirectView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +44,9 @@ public class ProfileController {
     PostRepository postRepository;
     @Autowired
     private FriendshipRepository friendshipRepository;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/profile")
     public ModelAndView getProfile() {
@@ -75,29 +77,35 @@ public class ProfileController {
 
 
     @PostMapping("/profile/edit")
-    public String updateProfileDetails(@ModelAttribute("profile") Profile profileForm,
-                                       @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
-        User currentUser = getCurrentUser();
-        Profile profile = profileRepository.findByUser(currentUser)
-                .orElseGet(() -> {
-                    Profile newProfile = new Profile();
-                    newProfile.setUser(currentUser);
-                    return newProfile;
-                });
+    public String updateProfileDetails(
+            @ModelAttribute("profile") Profile profileForm,
+            @RequestParam(value = "imageFile", required = false)
+            MultipartFile imageFile
+    ) {
+        try {
+            User currentUser = getCurrentUser();
+            Profile profile = profileRepository.findByUser(currentUser)
+                    .orElseGet(() -> {
+                        Profile newProfile = new Profile();
+                        newProfile.setUser(currentUser);
+                        return newProfile;
+                    });
+            if (imageFile != null && !imageFile.isEmpty()) {
+                byte[] compressedImage =
+                        imageService.compressImage(imageFile);
+                profile.setProfilePicture(compressedImage);
+            }
+            profile.setFirstName(profileForm.getFirstName());
+            profile.setLastName(profileForm.getLastName());
+            profile.setCurrentLocation(profileForm.getCurrentLocation());
+            profile.setHometown(profileForm.getHometown());
+            profile.setAboutMe(profileForm.getAboutMe());
+            profileRepository.save(profile);
+            return "redirect:/profile";
 
-        if (imageFile != null && !imageFile.isEmpty()) {
-            profile.setProfilePicture(imageFile.getBytes());
+        } catch (IOException e) {
+            return "redirect:/profile/edit?imageError=true";
         }
-
-        profile.setFirstName(profileForm.getFirstName());
-        profile.setLastName(profileForm.getLastName());
-        profile.setCurrentLocation(profileForm.getCurrentLocation());
-        profile.setHometown(profileForm.getHometown());
-        profile.setAboutMe(profileForm.getAboutMe());
-        profileRepository.save(profile);
-
-        return "redirect:/profile";
-
     }
 
     @GetMapping("/profile/{userId}")
