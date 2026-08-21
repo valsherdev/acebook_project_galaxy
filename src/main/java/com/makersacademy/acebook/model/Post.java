@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,19 +30,8 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Like> likes;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String images;
-
-    public List<String> getConvertedImages() {
-        List<String> convertedImages = new ArrayList<>();
-        if (this.images != null && !this.images.isBlank()) {
-            for (String image : this.images.split(",")) {
-                if (!image.isBlank()) {
-                    convertedImages.add(image);
-                }
-            }
-        } return convertedImages;
-    }
 
     public Post() {}
 
@@ -53,6 +41,28 @@ public class Post {
         this.user = user;
         this.createdAt = LocalDateTime.now();
         this.images = images;
+    }
+
+    public int getImageCount() {
+        if (images == null || images.isBlank()) {
+            return 0;
+        }
+
+        return images.split(",").length;
+    }
+
+    public String getImage(int imageIndex) {
+        if (images == null || images.isBlank()) {
+            return null;
+        }
+
+        String[] imageArray = images.split(",");
+
+        if (imageIndex < 0 || imageIndex >= imageArray.length) {
+            return null;
+        }
+
+        return imageArray[imageIndex];
     }
 
 }

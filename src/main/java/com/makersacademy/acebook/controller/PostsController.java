@@ -6,6 +6,7 @@ import com.makersacademy.acebook.repository.FriendshipRepository;
 import com.makersacademy.acebook.repository.LikeRepository;
 import com.makersacademy.acebook.repository.PostRepository;
 import com.makersacademy.acebook.repository.UserRepository;
+import com.makersacademy.acebook.service.ImageService;
 import com.makersacademy.acebook.model.Comment;
 import com.makersacademy.acebook.model.Like;
 import com.makersacademy.acebook.model.Post;
@@ -26,8 +27,11 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.io.ByteArrayOutputStream;
+
 import java.util.*;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +59,9 @@ public class PostsController {
 
     @Autowired
     ProfileRepository profileRepository;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/posts")
     public String index(@RequestParam(name = "filter", defaultValue = "all") String filter, Model model) {
@@ -99,35 +106,41 @@ public class PostsController {
     }
 
     @PostMapping("/posts")
-    public RedirectView create(@ModelAttribute Post post,
-                               @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws IOException {
-
-        boolean hasContent = post.getContent() != null && !post.getContent().isBlank();
+    public RedirectView create(
+            @ModelAttribute Post post,
+            @RequestParam(value = "imageFiles", required = false)
+            List<MultipartFile> imageFiles
+    ) {
+        boolean hasContent =
+                post.getContent() != null &&
+                        !post.getContent().isBlank();
         boolean hasImage = false;
-
-        if (imageFiles != null) {
-            for (MultipartFile file : imageFiles) {
-                if (file != null && !file.isEmpty()) {
+        List<String> encodedImages = new ArrayList<>();
+        try {
+            if (imageFiles != null) {
+                for (MultipartFile file : imageFiles) {
+                    if (file == null || file.isEmpty()) {
+                        continue;
+                    }
                     hasImage = true;
-                    break;
+
+                    byte[] compressedImage =
+                            imageService.compressImage(file);
+                    String encodedImage =
+                            Base64.getEncoder()
+                                    .encodeToString(compressedImage);
+                    encodedImages.add(encodedImage);
                 }
             }
+        } catch (IOException | RuntimeException e) {
+            return new RedirectView("/posts?imageError=true");
         }
-
         if (!hasContent && !hasImage) {
             return new RedirectView("/posts");
         }
-
         if (hasImage) {
-            List<String> encodedImages = new ArrayList<>();
-            for (MultipartFile file : imageFiles) {
-                if (!file.isEmpty()) {
-                    encodedImages.add(java.util.Base64.getEncoder().encodeToString(file.getBytes()));
-                }
-            }
             post.setImages(String.join(",", encodedImages));
         }
-
         User currentUser = getCurrentUser();
         post.setUser(currentUser);
         repository.save(post);
@@ -182,18 +195,23 @@ public class PostsController {
 
         Post post = repository.findById(postId).orElseThrow();
 
-        List<String> images = post.getConvertedImages();
+        String encodedImage = post.getImage(imageIndex);
 
-        if (imageIndex < 0 || imageIndex >= images.size()) {
+        if (encodedImage == null) {
             return ResponseEntity.notFound().build();
         }
 
-        byte[] imageBytes = Base64.getDecoder().decode(images.get(imageIndex));
+        try {
+            byte[] imageBytes = Base64.getDecoder().decode(encodedImage);
 
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageBytes);
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageBytes);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/posts/{postId}/delete")
